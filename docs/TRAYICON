@@ -1,0 +1,76 @@
+/*
+Create a tray icon. Note that further calls to this method 
+won't have any effect as the tray icon has been created already.
+Also, note that the tray icon will be shown immediately.
+*/
+App.createTrayIcon();
+
+
+
+/*
+Add a menu item to the tray icon context menu.
+id is a string containing the id of the item.
+text is a string containing the menu item caption.
+event is a string containing the name of the event that EventBus
+will trigger when this item is selected.
+*/
+App.addTrayIconMenuItem(id, text, event);
+
+
+
+/*
+Show a notification.
+title is a string containing the title of the notification.
+msg is a string containing the message of the notification.
+icon is one of the following options:
+	NoIcon (default)
+	Information
+	Warning
+	Critical
+msecs is the amount of time in ms the message will be visible.
+The default value is 10000ms
+On Windows msecs will be ignored if the application has the focus.
+On Mac the Growl plugin is needed for this to work.
+*/
+App.showTrayIconMessage(title, msg, icon, msecs);
+
+
+
+/*
+Show the tray icon. This is not the same as creating it.
+*/
+App.showTrayIcon();
+
+
+
+/*
+Hide the tray icon. This is not the same as destroying it.
+*/
+
+App.hideTrayIcon();
+
+
+/*
+Remove a menu item from the tray icon.
+id is a string containing the menu item id. This is the id
+you gave the item when you created it with.
+*/
+App.removeTrayIconMenuItem(id);
+
+
+
+/*
+Remove all the menu items from the tray icon.
+*/
+App.removeTrayIconMenuItems();
+
+
+
+/*
+Destroy the tray icon. That will remove the menu and the tray icon 
+itself. Note that you need to manually unbind any EventBus events
+that you may have binded while using the tray icon. This is not
+mandatory, but you'll probably want to do it if you plan to 
+create the tray icon again.
+*/
+App.removeTrayIcon();
