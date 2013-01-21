@@ -24,7 +24,7 @@ WebWidget::WebWidget(QApplication *app){
     setAttribute(Qt::WA_TranslucentBackground, true);
 
     setGeometry(getCustomGeometry(WebWidget::MainWindow));
-    setWindowTitle("JS Appchitect");
+    setWindowTitle("JUAS");
 
     QWebFrame *wf = gv->webView()->page()->mainFrame();
     wf->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
