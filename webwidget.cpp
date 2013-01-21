@@ -17,7 +17,6 @@ WebWidget::WebWidget(QApplication *app){
     widget = new QWidget(this);
     widget->setLayout(layout);
     setCentralWidget(widget);
-    setMinimumSize(1, 1);
 
     // http://qt-project.org/doc/qt-5.0/qtcore/qt.html#WindowType-enum
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowSystemMenuHint);

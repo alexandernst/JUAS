@@ -49,6 +49,17 @@ $(document).ready(function(){
             currentW = ui.size.width;
             currentH = ui.size.height;
 
+            //TODO: Handle max width/height
+            //TODO: Handle null values
+            var min_width = container.resizable("option", "minWidth");
+            var min_height = container.resizable("option", "minHeight");
+
+            //In case we hit the min width/height we'll use those
+            var shiftW_bkp = shiftW;
+            var shiftH_bkp = shiftH;
+            var currentX_bkp = currentX;
+            var currentY_bkp = currentY;
+
             switch(side){
                 case "E":
                 case "SE":
@@ -66,6 +77,12 @@ $(document).ready(function(){
 
                     currentH = currentH + t + b;
 
+                    if(currentW - l - r < min_width){
+                        currentX = currentX_bkp;
+                        shiftW = shiftW_bkp;
+                        currentW = min_width;
+                    }
+
                     break;
 
                 case "W":
@@ -79,6 +96,18 @@ $(document).ready(function(){
                     shiftH += currentH - ui.originalSize.height;
                     currentH = (ui.originalSize.height + t + b) + shiftH;
 
+                    if(currentW - l - r < min_width){
+                        currentX = currentX_bkp;
+                        shiftW = shiftW_bkp;
+                        currentW = min_width;
+                    }
+
+                    if(currentH - t - b < min_height){
+                        currentY = currentY_bkp;
+                        shiftH = shiftH_bkp;
+                        currentH = min_height;
+                    }
+
                     break;
 
                 case "NE":
@@ -87,6 +116,12 @@ $(document).ready(function(){
                     currentY += ui.originalSize.height - currentH;
                     shiftH += currentH - ui.originalSize.height;
                     currentH = (ui.originalSize.height + t + b) + shiftH;
+
+                    if(currentH - t - b < min_height){
+                        currentY = currentY_bkp;
+                        shiftH = shiftH_bkp;
+                        currentH = min_height;
+                    }
 
                     break;
             }
