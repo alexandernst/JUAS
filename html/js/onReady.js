@@ -51,7 +51,6 @@ $(document).ready(function(){
             currentW = ui.size.width;
             currentH = ui.size.height;
 
-            //TODO: Handle null values
             var min_width = container.resizable("option", "minWidth");
             var min_height = container.resizable("option", "minHeight");
             var max_width = container.resizable("option", "maxWidth");
@@ -80,11 +79,11 @@ $(document).ready(function(){
 
                     currentH = currentH + t + b;
 
-                    if(currentW - l - r <= min_width){
+                    if(!_.isNull(min_width) && currentW - l - r <= min_width){
                         currentX = currentX_bkp;
                         shiftW = shiftW_bkp;
                         currentW = min_width;
-                    }else if(currentW - l - r >= max_width){
+                    }else if(!_.isNull(max_width) && currentW - l - r >= max_width){
                         currentX = currentX_bkp;
                         shiftW = shiftW_bkp;
                         currentW = max_width;
@@ -103,21 +102,21 @@ $(document).ready(function(){
                     shiftH += currentH - ui.originalSize.height;
                     currentH = (ui.originalSize.height + t + b) + shiftH;
 
-                    if(currentW - l - r <= min_width){
+                    if(!_.isNull(min_width) && currentW - l - r <= min_width){
                         currentX = currentX_bkp;
                         shiftW = shiftW_bkp;
                         currentW = min_width;
-                    }else if(currentW - l - r >= max_width){
+                    }else if(!_.isNull(max_width) && currentW - l - r >= max_width){
                         currentX = currentX_bkp;
                         shiftW = shiftW_bkp;
                         currentW = max_width;
                     }
 
-                    if(currentH - t - b <= min_height){
+                    if(!_.isNull(min_height) && currentH - t - b <= min_height){
                         currentY = currentY_bkp;
                         shiftH = shiftH_bkp;
                         currentH = min_height;
-                    }else if(currentH - t - b >= max_height){
+                    }else if(!_.isNull(max_height) && currentH - t - b >= max_height){
                         currentY = currentY_bkp;
                         shiftH = shiftH_bkp;
                         currentH = max_height;
@@ -132,11 +131,11 @@ $(document).ready(function(){
                     shiftH += currentH - ui.originalSize.height;
                     currentH = (ui.originalSize.height + t + b) + shiftH;
 
-                    if(currentH - t - b <= min_height){
+                    if(!_.isNull(min_height) && currentH - t - b <= min_height){
                         currentY = currentY_bkp;
                         shiftH = shiftH_bkp;
                         currentH = min_height;
-                    }else if(currentH - t - b >= max_height){
+                    }else if(!_.isNull(max_height) && currentH - t - b >= max_height){
                         currentY = currentY_bkp;
                         shiftH = shiftH_bkp;
                         currentH = max_height;
