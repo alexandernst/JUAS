@@ -145,7 +145,7 @@ $(document).ready(function(){
                     break;
             }
 
-            App.jsResize(currentX, currentY, currentW, currentH);
+            App.resize(currentX, currentY, currentW, currentH);
 
             container.width(currentW - l - r);
             container.height(currentH - t - b);

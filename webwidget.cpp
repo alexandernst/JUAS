@@ -96,7 +96,7 @@ void WebWidget::quit(){
 |
 \********************/
 
-void WebWidget::jsResize(int x, int y, int w, int h){
+void WebWidget::resize(int x, int y, int w, int h){
     setGeometry(x, y, w, h);
 }
 
