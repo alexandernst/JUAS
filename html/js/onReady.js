@@ -2,12 +2,11 @@ var DEBUG = true;
 
 $(document).ready(function(){
 
-    var layout;
+    var layout, container = $('#container');
+    var currentX = App.x, currentY = App.y; //Current X,Y of the window
+    var currentW = App.width, currentH = App.height; //Current width/height of the window
     var shiftW = 0, shiftH = 0; //Used for resizing
     var startX, startY, startW, startH; //Used every time a resize is started
-    var currentX = App.x, currentY = App.y;
-    var currentW = App.width, currentH = App.height;
-    var container = $('#container');
 
     //TODO: change l, r, t and b if they're changed programatically
     var l = parseInt(container.css('padding-left')) + parseInt(container.css('margin-left'));
@@ -37,6 +36,11 @@ $(document).ready(function(){
 
 		resize: function(e, ui){
 
+            if(DEBUG){
+                console.profile();
+                console.time("t");
+            }
+
             var side = "";                                              //	/*******N*******\
             var sides = ["e", "se", "s", "sw", "w", "nw", "n", "ne"];   //	*NW			  NE*
             _.each(sides, function(value, index){                       //	*				*
@@ -56,12 +60,6 @@ $(document).ready(function(){
             var max_width = container.resizable("option", "maxWidth");
             var max_height = container.resizable("option", "maxHeight");
 
-            //In case we hit the min width/height we'll use those
-            var shiftW_bkp = shiftW;
-            var shiftH_bkp = shiftH;
-            var currentX_bkp = currentX;
-            var currentY_bkp = currentY;
-
             switch(side){
                 case "E":
                 case "SE":
@@ -73,53 +71,68 @@ $(document).ready(function(){
                     break;
 
                 case "SW":
-                    currentX += ui.originalSize.width - currentW;
-                    shiftW += currentW - ui.originalSize.width;
-                    currentW = (ui.originalSize.width + l + r) + shiftW;
-
                     currentH = currentH + t + b;
 
-                    if(!_.isNull(min_width) && currentW - l - r <= min_width){
-                        currentX = currentX_bkp;
-                        shiftW = shiftW_bkp;
+                    if(!_.isNull(min_width) && shiftW + currentW + l + r <= min_width){
                         currentW = min_width;
-                    }else if(!_.isNull(max_width) && currentW - l - r >= max_width){
-                        currentX = currentX_bkp;
-                        shiftW = shiftW_bkp;
+                    }else if(!_.isNull(max_width) && shiftW + currentW + l + r >= max_width){
                         currentW = max_width;
+                    }else{
+                        currentX += ui.originalSize.width - currentW;
+                        shiftW += currentW - ui.originalSize.width;
+                        currentW = (ui.originalSize.width + l + r) + shiftW;
                     }
 
                     break;
 
                 case "W":
-                case "NW":
-                case "N":
-                    currentX += ui.originalSize.width - currentW;
-                    shiftW += currentW - ui.originalSize.width;
-                    currentW = (ui.originalSize.width + l + r) + shiftW;
 
-                    currentY += ui.originalSize.height - currentH;
-                    shiftH += currentH - ui.originalSize.height;
-                    currentH = (ui.originalSize.height + t + b) + shiftH;
-
-                    if(!_.isNull(min_width) && currentW - l - r <= min_width){
-                        currentX = currentX_bkp;
-                        shiftW = shiftW_bkp;
+                    if(!_.isNull(min_width) && shiftW + currentW + l + r <= min_width){
                         currentW = min_width;
-                    }else if(!_.isNull(max_width) && currentW - l - r >= max_width){
-                        currentX = currentX_bkp;
-                        shiftW = shiftW_bkp;
+                    }else if(!_.isNull(max_width) && shiftW + currentW + l + r >= max_width){
                         currentW = max_width;
+                    }else{
+                        currentX += ui.originalSize.width - currentW;
+                        shiftW += currentW - ui.originalSize.width;
+                        currentW = (ui.originalSize.width + l + r) + shiftW;
                     }
 
-                    if(!_.isNull(min_height) && currentH - t - b <= min_height){
-                        currentY = currentY_bkp;
-                        shiftH = shiftH_bkp;
+                    break;
+
+                case "NW":
+
+                    if(!_.isNull(min_width) && shiftW + currentW + l + r <= min_width){
+                        currentW = min_width;
+                    }else if(!_.isNull(max_width) && shiftW + currentW + l + r >= max_width){
+                        currentW = max_width;
+                    }else{
+                        currentX += ui.originalSize.width - currentW;
+                        shiftW += currentW - ui.originalSize.width;
+                        currentW = (ui.originalSize.width + l + r) + shiftW;
+                    }
+
+                    if(!_.isNull(min_height) && shiftH + currentH + t + b <= min_height){
                         currentH = min_height;
-                    }else if(!_.isNull(max_height) && currentH - t - b >= max_height){
-                        currentY = currentY_bkp;
-                        shiftH = shiftH_bkp;
+                    }else if(!_.isNull(max_height) && shiftH + currentH + t + b >= max_height){
                         currentH = max_height;
+                    }else{
+                        currentY += ui.originalSize.height - currentH;
+                        shiftH += currentH - ui.originalSize.height;
+                        currentH = (ui.originalSize.height + t + b) + shiftH;
+                    }
+
+                    break;
+
+                case "N":
+
+                    if(!_.isNull(min_height) && shiftH + currentH + t + b <= min_height){
+                        currentH = min_height;
+                    }else if(!_.isNull(max_height) && shiftH + currentH + t + b >= max_height){
+                        currentH = max_height;
+                    }else{
+                        currentY += ui.originalSize.height - currentH;
+                        shiftH += currentH - ui.originalSize.height;
+                        currentH = (ui.originalSize.height + t + b) + shiftH;
                     }
 
                     break;
@@ -127,18 +140,14 @@ $(document).ready(function(){
                 case "NE":
                     currentW = currentW + l + r;
 
-                    currentY += ui.originalSize.height - currentH;
-                    shiftH += currentH - ui.originalSize.height;
-                    currentH = (ui.originalSize.height + t + b) + shiftH;
-
-                    if(!_.isNull(min_height) && currentH - t - b <= min_height){
-                        currentY = currentY_bkp;
-                        shiftH = shiftH_bkp;
+                    if(!_.isNull(min_height) && shiftH + currentH + t + b <= min_height){
                         currentH = min_height;
-                    }else if(!_.isNull(max_height) && currentH - t - b >= max_height){
-                        currentY = currentY_bkp;
-                        shiftH = shiftH_bkp;
+                    }else if(!_.isNull(max_height) && shiftH + currentH + t + b >= max_height){
                         currentH = max_height;
+                    }else{
+                        currentY += ui.originalSize.height - currentH;
+                        shiftH += currentH - ui.originalSize.height;
+                        currentH = (ui.originalSize.height + t + b) + shiftH;
                     }
 
                     break;
@@ -155,6 +164,11 @@ $(document).ready(function(){
             e.preventDefault();
             //TODO: dispatch only if changed
             EventBus.dispatch("window_resize", e, ui);
+
+            if(DEBUG){
+                console.timeEnd("t");
+                console.profileEnd();
+            }
 
         },
 
