@@ -24,6 +24,8 @@ $(document).ready(function(){
 		handles: 'n, e, s, w, ne, se, sw, nw', // 'all' ?
         minWidth: 300,
         minHeight: 300,
+        maxWidth: 1250,
+        maxHeight: 700,
 
 		start: function(e, ui){
 			handleTarget = $(e.originalEvent.target);
@@ -49,10 +51,11 @@ $(document).ready(function(){
             currentW = ui.size.width;
             currentH = ui.size.height;
 
-            //TODO: Handle max width/height
             //TODO: Handle null values
             var min_width = container.resizable("option", "minWidth");
             var min_height = container.resizable("option", "minHeight");
+            var max_width = container.resizable("option", "maxWidth");
+            var max_height = container.resizable("option", "maxHeight");
 
             //In case we hit the min width/height we'll use those
             var shiftW_bkp = shiftW;
@@ -77,10 +80,14 @@ $(document).ready(function(){
 
                     currentH = currentH + t + b;
 
-                    if(currentW - l - r < min_width){
+                    if(currentW - l - r <= min_width){
                         currentX = currentX_bkp;
                         shiftW = shiftW_bkp;
                         currentW = min_width;
+                    }else if(currentW - l - r >= max_width){
+                        currentX = currentX_bkp;
+                        shiftW = shiftW_bkp;
+                        currentW = max_width;
                     }
 
                     break;
@@ -96,16 +103,24 @@ $(document).ready(function(){
                     shiftH += currentH - ui.originalSize.height;
                     currentH = (ui.originalSize.height + t + b) + shiftH;
 
-                    if(currentW - l - r < min_width){
+                    if(currentW - l - r <= min_width){
                         currentX = currentX_bkp;
                         shiftW = shiftW_bkp;
                         currentW = min_width;
+                    }else if(currentW - l - r >= max_width){
+                        currentX = currentX_bkp;
+                        shiftW = shiftW_bkp;
+                        currentW = max_width;
                     }
 
-                    if(currentH - t - b < min_height){
+                    if(currentH - t - b <= min_height){
                         currentY = currentY_bkp;
                         shiftH = shiftH_bkp;
                         currentH = min_height;
+                    }else if(currentH - t - b >= max_height){
+                        currentY = currentY_bkp;
+                        shiftH = shiftH_bkp;
+                        currentH = max_height;
                     }
 
                     break;
@@ -117,10 +132,14 @@ $(document).ready(function(){
                     shiftH += currentH - ui.originalSize.height;
                     currentH = (ui.originalSize.height + t + b) + shiftH;
 
-                    if(currentH - t - b < min_height){
+                    if(currentH - t - b <= min_height){
                         currentY = currentY_bkp;
                         shiftH = shiftH_bkp;
                         currentH = min_height;
+                    }else if(currentH - t - b >= max_height){
+                        currentY = currentY_bkp;
+                        shiftH = shiftH_bkp;
+                        currentH = max_height;
                     }
 
                     break;
