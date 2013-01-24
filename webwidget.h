@@ -41,7 +41,6 @@ class WebWidget : public QMainWindow
         Q_INVOKABLE void addTrayIconMenuItem(QString id, QString text, QString event);
         Q_INVOKABLE void showTrayIconMessage(QString title, QString msg, QString icon = "NoIcon", int msecs = 10000);
 
-
     private:
 
         typedef enum {

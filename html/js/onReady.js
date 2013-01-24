@@ -15,26 +15,27 @@ $(document).ready(function(){
     var b = parseInt(container.css('padding-bottom')) + parseInt(container.css('margin-bottom'));
 
     layout = container.layout({
-		applyDemoStyles: true,
+        applyDemoStyles: true,
         resizeWithWindowMaxDelay: 1
-	});
+    });
 
     container.resizable({
-		handles: 'n, e, s, w, ne, se, sw, nw', // 'all' ?
+        handles: 'n, e, s, w, ne, se, sw, nw', // 'all' ?
         minWidth: 300,
         minHeight: 300,
         maxWidth: 1250,
         maxHeight: 700,
 
-		start: function(e, ui){
-			handleTarget = $(e.originalEvent.target);
+    start: function(e, ui){
+            App.resizeStart();
+            handleTarget = $(e.originalEvent.target);
             startX = e.screenX - e.pageX;
             startY = e.screenY - e.pageY;
             startW = ui.size.width;
             startH = ui.size.height;
 		},
 
-		resize: function(e, ui){
+        resize: function(e, ui){
 
             if(DEBUG){
                 console.profile();
@@ -42,15 +43,15 @@ $(document).ready(function(){
             }
 
             var side = "";                                              //	/*******N*******\
-            var sides = ["e", "se", "s", "sw", "w", "nw", "n", "ne"];   //	*NW			  NE*
-            _.each(sides, function(value, index){                       //	*				*
-                if(handleTarget.hasClass("ui-resizable-" + value)){     //	W				E
-                    side = value.toUpperCase();                         //	*				*
-                }                                                       //	*SW			  SE*
+            var sides = ["e", "se", "s", "sw", "w", "nw", "n", "ne"];   //	*NW           NE*
+            _.each(sides, function(value, index){                       //	*               *
+                if(handleTarget.hasClass("ui-resizable-" + value)){     //	W               E
+                    side = value.toUpperCase();                         //	*               *
+                }                                                       //	*SW           SE*
             });                                                         //	\*******S*******/
 
-            currentX = e.screenX - e.pageX;
-            currentY = e.screenY - e.pageY;
+            currentX = e.screenX - e.clientX;
+            currentY = e.screenY - e.clientY;
 
             currentW = ui.size.width;
             currentH = ui.size.height;
@@ -180,7 +181,7 @@ $(document).ready(function(){
 
             shiftW = shiftH = 0;
         }
-	});
+    });
 
     $("#minimize").on("mouseup", function(e){
         e.preventDefault();
