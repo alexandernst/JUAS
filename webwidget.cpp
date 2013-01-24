@@ -31,9 +31,13 @@ WebWidget::WebWidget(QApplication *app){
 
     QWebSettings *ws = gv->webView()->page()->settings();
     ws->setAttribute(QWebSettings::LocalStorageEnabled, true);
+    ws->setAttribute(QWebSettings::ScrollAnimatorEnabled, true);
     ws->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
+    ws->setAttribute(QWebSettings::JavascriptCanOpenWindows, true);
+    ws->setAttribute(QWebSettings::JavascriptCanCloseWindows, true);
     ws->setAttribute(QWebSettings::JavascriptCanAccessClipboard, true);
     ws->setAttribute(QWebSettings::OfflineStorageDatabaseEnabled, true);
+    ws->setAttribute(QWebSettings::LocalContentCanAccessFileUrls, true);
     ws->setAttribute(QWebSettings::LocalContentCanAccessRemoteUrls, true);
     ws->setAttribute(QWebSettings::OfflineWebApplicationCacheEnabled, true);
 
