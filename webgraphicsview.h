@@ -20,12 +20,13 @@ class WebGraphicsView : public QGraphicsView{
         explicit WebGraphicsView(QWidget *parent = 0);
 
         QGraphicsWebView *webView();
+        QGraphicsScene *scene();
         void loadUrl(QUrl url);
         void resizeEvent(QResizeEvent *event);
         void loadFile(QString fileName);
 
     private:
-        QGraphicsScene *scene;
+        QGraphicsScene *obj_scene;
         QGraphicsWebView *obj_webView;
 };
 

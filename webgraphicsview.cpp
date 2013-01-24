@@ -9,10 +9,10 @@ WebGraphicsView::WebGraphicsView(QWidget *parent) : QGraphicsView(parent){
     obj_webView->setAcceptTouchEvents(true);
     obj_webView->setAcceptHoverEvents(true);
 
-    scene = new QGraphicsScene;
-    setScene(scene);
-    scene->addItem(obj_webView);
-    scene->setActiveWindow(obj_webView);
+    obj_scene = new QGraphicsScene;
+    setScene(obj_scene);
+    obj_scene->addItem(obj_webView);
+    obj_scene->setActiveWindow(obj_webView);
 
     setFrameShape(QFrame::NoFrame);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -30,4 +30,8 @@ void WebGraphicsView::loadUrl(QUrl url){
 
 QGraphicsWebView *WebGraphicsView::webView(){
     return obj_webView;
+}
+
+QGraphicsScene *WebGraphicsView::scene(){
+    return obj_scene;
 }
