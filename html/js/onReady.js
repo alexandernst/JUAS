@@ -27,13 +27,12 @@ $(document).ready(function(){
         maxHeight: 700,
 
     start: function(e, ui){
-            App.resizeStart();
             handleTarget = $(e.originalEvent.target);
             startX = e.screenX - e.pageX;
             startY = e.screenY - e.pageY;
             startW = ui.size.width;
             startH = ui.size.height;
-		},
+        },
 
         resize: function(e, ui){
 
