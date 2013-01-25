@@ -58,9 +58,12 @@ $(document).ready(function(){
 
         start: function(e, ui){
             observer.stop();
+
             handleTarget = $(e.originalEvent.target);
+
             startX = e.screenX - e.pageX;
             startY = e.screenY - e.pageY;
+
             startW = ui.size.width;
             startH = ui.size.height;
         },
@@ -86,6 +89,9 @@ $(document).ready(function(){
             var max_width = container.resizable("option", "maxWidth");
             var max_height = container.resizable("option", "maxHeight");
 
+            var diffW = ui.originalSize.width - currentW;
+            var diffH = ui.originalSize.height - currentH;
+
             switch(side){
                 case "E":
                 case "SE":
@@ -104,9 +110,9 @@ $(document).ready(function(){
                     }else if(!_.isNull(max_width) && shiftW + currentW + lr >= max_width){
                         currentW = max_width;
                     }else{
-                        currentX += ui.originalSize.width - currentW;
-                        shiftW += currentW - ui.originalSize.width;
-                        currentW = (ui.originalSize.width + lr) + shiftW;
+                        currentX += diffW;
+                        shiftW -= diffW;
+                        currentW = ui.originalSize.width + lr + shiftW;
                     }
 
                     break;
@@ -118,9 +124,9 @@ $(document).ready(function(){
                     }else if(!_.isNull(max_width) && shiftW + currentW + lr >= max_width){
                         currentW = max_width;
                     }else{
-                        currentX += ui.originalSize.width - currentW;
-                        shiftW += currentW - ui.originalSize.width;
-                        currentW = (ui.originalSize.width + lr) + shiftW;
+                        currentX += diffW;
+                        shiftW -= diffW;
+                        currentW = ui.originalSize.width + lr + shiftW;
                     }
 
                     break;
@@ -132,9 +138,9 @@ $(document).ready(function(){
                     }else if(!_.isNull(max_width) && shiftW + currentW + lr >= max_width){
                         currentW = max_width;
                     }else{
-                        currentX += ui.originalSize.width - currentW;
-                        shiftW += currentW - ui.originalSize.width;
-                        currentW = (ui.originalSize.width + lr) + shiftW;
+                        currentX += diffW;
+                        shiftW -= diffW;
+                        currentW = ui.originalSize.width + lr + shiftW;
                     }
 
                     if(!_.isNull(min_height) && shiftH + currentH + tb <= min_height){
@@ -142,9 +148,9 @@ $(document).ready(function(){
                     }else if(!_.isNull(max_height) && shiftH + currentH + tb >= max_height){
                         currentH = max_height;
                     }else{
-                        currentY += ui.originalSize.height - currentH;
-                        shiftH += currentH - ui.originalSize.height;
-                        currentH = (ui.originalSize.height + tb) + shiftH;
+                        currentY += diffH;
+                        shiftH -= diffH;
+                        currentH = ui.originalSize.height + tb + shiftH;
                     }
 
                     break;
@@ -156,9 +162,9 @@ $(document).ready(function(){
                     }else if(!_.isNull(max_height) && shiftH + currentH + tb >= max_height){
                         currentH = max_height;
                     }else{
-                        currentY += ui.originalSize.height - currentH;
-                        shiftH += currentH - ui.originalSize.height;
-                        currentH = (ui.originalSize.height + tb) + shiftH;
+                        currentY += diffH;
+                        shiftH -= diffH;
+                        currentH = ui.originalSize.height + tb + shiftH;
                     }
 
                     break;
@@ -171,9 +177,9 @@ $(document).ready(function(){
                     }else if(!_.isNull(max_height) && shiftH + currentH + tb >= max_height){
                         currentH = max_height;
                     }else{
-                        currentY += ui.originalSize.height - currentH;
-                        shiftH += currentH - ui.originalSize.height;
-                        currentH = (ui.originalSize.height + tb) + shiftH;
+                        currentY += diffH;
+                        shiftH -= diffH;
+                        currentH = ui.originalSize.height + tb + shiftH;
                     }
 
                     break;
