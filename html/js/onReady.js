@@ -2,17 +2,47 @@ var DEBUG = true;
 
 $(document).ready(function(){
 
+    var lr, tb;
     var layout, container = $('#container');
     var currentX = App.x, currentY = App.y; //Current X,Y of the window
-    var currentW = App.width, currentH = App.height; //Current width/height of the window
+    var currentW = App.width, currentH = App.height; //Current width/height of the window (including margin)
     var shiftW = 0, shiftH = 0; //Used for resizing
     var startX, startY, startW, startH; //Used every time a resize is started
+    var observer, observer_conf = { subtree: true, childList: true, attributes: true, characterData: true };
 
-    //TODO: change l, r, t and b if they're changed programatically
-    var l = parseInt(container.css('padding-left')) + parseInt(container.css('margin-left'));
-    var r = parseInt(container.css('padding-right')) + parseInt(container.css('margin-right'));
-    var t = parseInt(container.css('padding-top')) + parseInt(container.css('margin-top'));
-    var b = parseInt(container.css('padding-bottom')) + parseInt(container.css('margin-bottom'));
+    var parser = _.memoize(function(margins){
+        return _.reduce(margins, function(memo, num){
+            return memo + (parseInt(num) === NaN ? 0 : parseInt(num));
+        }, 0);
+    });
+    function parse(sides){
+        var margins = _.values(container.css(sides));
+        return parser(margins);
+    }
+    function calc_margin(){
+        lr = parse(['margin-left', 'margin-right']);
+        tb = parse(['margin-top', 'margin-bottom']);
+    };
+    calc_margin();
+
+    observer = new WebKitMutationObserver(function(mutations, observer) {
+        mutations.forEach(function(mutation){
+            if(mutation.target.id == container.attr("id") && mutation.type == "attributes"){
+                calc_margin();
+                App.resize(currentX, currentY, currentW + lr, currentH + tb);
+            }
+        });
+    });
+
+    observer.start = function(){
+        observer.observe(document, observer_conf);
+    }
+
+    observer.stop = function(){
+        observer.disconnect();
+    }
+
+    observer.start();
 
     layout = container.layout({
         applyDemoStyles: true,
@@ -20,13 +50,14 @@ $(document).ready(function(){
     });
 
     container.resizable({
-        handles: 'n, e, s, w, ne, se, sw, nw', // 'all' ?
+        handles: 'n, e, s, w, ne, se, sw, nw', // 'all'
         minWidth: 300,
         minHeight: 300,
         maxWidth: 1250,
         maxHeight: 700,
 
-    start: function(e, ui){
+        start: function(e, ui){
+            observer.stop();
             handleTarget = $(e.originalEvent.target);
             startX = e.screenX - e.pageX;
             startY = e.screenY - e.pageY;
@@ -35,11 +66,6 @@ $(document).ready(function(){
         },
 
         resize: function(e, ui){
-
-            if(DEBUG){
-                console.profile();
-                console.time("t");
-            }
 
             var side = "";                                              //	/*******N*******\
             var sides = ["e", "se", "s", "sw", "w", "nw", "n", "ne"];   //	*NW           NE*
@@ -64,90 +90,90 @@ $(document).ready(function(){
                 case "E":
                 case "SE":
                 case "S":
-                    currentW = currentW + l + r;
+                    currentW = currentW + lr;
 
-                    currentH = currentH + t + b;
+                    currentH = currentH + tb;
 
                     break;
 
                 case "SW":
-                    currentH = currentH + t + b;
+                    currentH = currentH + tb;
 
-                    if(!_.isNull(min_width) && shiftW + currentW + l + r <= min_width){
+                    if(!_.isNull(min_width) && shiftW + currentW + lr <= min_width){
                         currentW = min_width;
-                    }else if(!_.isNull(max_width) && shiftW + currentW + l + r >= max_width){
+                    }else if(!_.isNull(max_width) && shiftW + currentW + lr >= max_width){
                         currentW = max_width;
                     }else{
                         currentX += ui.originalSize.width - currentW;
                         shiftW += currentW - ui.originalSize.width;
-                        currentW = (ui.originalSize.width + l + r) + shiftW;
+                        currentW = (ui.originalSize.width + lr) + shiftW;
                     }
 
                     break;
 
                 case "W":
 
-                    if(!_.isNull(min_width) && shiftW + currentW + l + r <= min_width){
+                    if(!_.isNull(min_width) && shiftW + currentW + lr <= min_width){
                         currentW = min_width;
-                    }else if(!_.isNull(max_width) && shiftW + currentW + l + r >= max_width){
+                    }else if(!_.isNull(max_width) && shiftW + currentW + lr >= max_width){
                         currentW = max_width;
                     }else{
                         currentX += ui.originalSize.width - currentW;
                         shiftW += currentW - ui.originalSize.width;
-                        currentW = (ui.originalSize.width + l + r) + shiftW;
+                        currentW = (ui.originalSize.width + lr) + shiftW;
                     }
 
                     break;
 
                 case "NW":
 
-                    if(!_.isNull(min_width) && shiftW + currentW + l + r <= min_width){
+                    if(!_.isNull(min_width) && shiftW + currentW + lr <= min_width){
                         currentW = min_width;
-                    }else if(!_.isNull(max_width) && shiftW + currentW + l + r >= max_width){
+                    }else if(!_.isNull(max_width) && shiftW + currentW + lr >= max_width){
                         currentW = max_width;
                     }else{
                         currentX += ui.originalSize.width - currentW;
                         shiftW += currentW - ui.originalSize.width;
-                        currentW = (ui.originalSize.width + l + r) + shiftW;
+                        currentW = (ui.originalSize.width + lr) + shiftW;
                     }
 
-                    if(!_.isNull(min_height) && shiftH + currentH + t + b <= min_height){
+                    if(!_.isNull(min_height) && shiftH + currentH + tb <= min_height){
                         currentH = min_height;
-                    }else if(!_.isNull(max_height) && shiftH + currentH + t + b >= max_height){
+                    }else if(!_.isNull(max_height) && shiftH + currentH + tb >= max_height){
                         currentH = max_height;
                     }else{
                         currentY += ui.originalSize.height - currentH;
                         shiftH += currentH - ui.originalSize.height;
-                        currentH = (ui.originalSize.height + t + b) + shiftH;
+                        currentH = (ui.originalSize.height + tb) + shiftH;
                     }
 
                     break;
 
                 case "N":
 
-                    if(!_.isNull(min_height) && shiftH + currentH + t + b <= min_height){
+                    if(!_.isNull(min_height) && shiftH + currentH + tb <= min_height){
                         currentH = min_height;
-                    }else if(!_.isNull(max_height) && shiftH + currentH + t + b >= max_height){
+                    }else if(!_.isNull(max_height) && shiftH + currentH + tb >= max_height){
                         currentH = max_height;
                     }else{
                         currentY += ui.originalSize.height - currentH;
                         shiftH += currentH - ui.originalSize.height;
-                        currentH = (ui.originalSize.height + t + b) + shiftH;
+                        currentH = (ui.originalSize.height + tb) + shiftH;
                     }
 
                     break;
 
                 case "NE":
-                    currentW = currentW + l + r;
+                    currentW = currentW + lr;
 
-                    if(!_.isNull(min_height) && shiftH + currentH + t + b <= min_height){
+                    if(!_.isNull(min_height) && shiftH + currentH + tb <= min_height){
                         currentH = min_height;
-                    }else if(!_.isNull(max_height) && shiftH + currentH + t + b >= max_height){
+                    }else if(!_.isNull(max_height) && shiftH + currentH + tb >= max_height){
                         currentH = max_height;
                     }else{
                         currentY += ui.originalSize.height - currentH;
                         shiftH += currentH - ui.originalSize.height;
-                        currentH = (ui.originalSize.height + t + b) + shiftH;
+                        currentH = (ui.originalSize.height + tb) + shiftH;
                     }
 
                     break;
@@ -155,8 +181,8 @@ $(document).ready(function(){
 
             App.resize(currentX, currentY, currentW, currentH);
 
-            container.width(currentW - l - r);
-            container.height(currentH - t - b);
+            container.width(currentW - lr);
+            container.height(currentH - tb);
 
             container.css("left", "0px");
             container.css("top", "0px");
@@ -164,11 +190,6 @@ $(document).ready(function(){
             e.preventDefault();
             //TODO: dispatch only if changed
             EventBus.dispatch("window_resize", e, ui);
-
-            if(DEBUG){
-                console.timeEnd("t");
-                console.profileEnd();
-            }
 
         },
 
@@ -179,6 +200,7 @@ $(document).ready(function(){
             EventBus.dispatch("window_resized", e, ui);
 
             shiftW = shiftH = 0;
+            observer.start();
         }
     });
 
@@ -195,9 +217,9 @@ $(document).ready(function(){
     $("#quit").on("mouseup", function(e){
         e.preventDefault();
         App.quit();
-	});
+    });
 
-	$("#bar").mousedown(function(e){
+    $("#bar").mousedown(function(e){
         e.preventDefault();
 
         if(this !== e.target){
@@ -238,11 +260,11 @@ $(document).ready(function(){
             e.preventDefault();
             return false;
         });
-	});
+    });
 
     function debug_window_resize(e, ui){
         e = e.target;
-        //console.log("Size change from %s:%s to %s:%s", ui.originalSize.width + l + r, ui.originalSize.height + t + b, currentW, currentH);
+        //console.log("Size change from %s:%s to %s:%s", ui.originalSize.width + lr, ui.originalSize.height + tb, currentW, currentH);
     }
 
     function debug_window_resized(e, ui){
