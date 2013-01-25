@@ -41,11 +41,11 @@ WebWidget::WebWidget(QApplication *app){
     ws->setAttribute(QWebSettings::LocalContentCanAccessRemoteUrls, true);
     ws->setAttribute(QWebSettings::OfflineWebApplicationCacheEnabled, true);
 
-#ifndef DEBUG
+#ifdef QT_NO_DEBUG
     ws->setAttribute(QWebSettings::TiledBackingStoreEnabled, true); // ?
 #endif
 
-#ifdef DEBUG
+#ifndef QT_NO_DEBUG
     webInspector = new QWebInspector();
     webInspector->setPage(gv->webView()->page());
     webInspector->setGeometry(getCustomGeometry(WebWidget::DebugWindow));
@@ -62,7 +62,7 @@ void WebWidget::createJSBridge(){
     gv->webView()->page()->mainFrame()->addToJavaScriptWindowObject("App", this);
 
     show();
-#ifdef DEBUG
+#ifndef QT_NO_DEBUG
     webInspector->show();
 #endif
 }
@@ -149,7 +149,7 @@ QRect WebWidget::getCustomGeometry(WindowType wt){
 
     switch(wt){
         case WebWidget::MainWindow:
-#ifdef DEBUG
+#ifndef QT_NO_DEBUG
             width = total_width * 0.7; //70% width
             height = total_height * 0.6; //60% height
             r = new QRect((total_width - width) / 2, total_height / 2 - height * 0.75, width, height);

@@ -1,8 +1,6 @@
 #ifndef WEBWIDGET_H
 #define WEBWIDGET_H
 
-#define DEBUG
-
 //Qt 5.0 won't minimize frameless windows. TODO: Remove when fixed
 // https://bugreports.qt-project.org/browse/QTBUG-29109
 #define MINIMIZE_PATCH
@@ -56,7 +54,7 @@ class WebWidget : public QMainWindow
         QDesktopWidget *desktop;
         QPoint fromBorderPosition;
         QSystemTrayIcon *trayIcon = 0;
-#ifdef DEBUG
+#ifndef QT_NO_DEBUG
         QWebInspector *webInspector;
 #endif
 
