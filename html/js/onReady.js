@@ -70,13 +70,19 @@ $(document).ready(function(){
 
         resize: function(e, ui){
 
-            var side = "";                                              //	/*******N*******\
-            var sides = ["e", "se", "s", "sw", "w", "nw", "n", "ne"];   //	*NW           NE*
-            _.each(sides, function(value, index){                       //	*               *
-                if(handleTarget.hasClass("ui-resizable-" + value)){     //	W               E
-                    side = value.toUpperCase();                         //	*               *
-                }                                                       //	*SW           SE*
-            });                                                         //	\*******S*******/
+            //      /*******N*******\
+            //      *NW           NE*
+            //      *               *
+            //      W               E
+            //      *               *
+            //      *SW           SE*
+            //      \*******S*******/
+
+            var sides = ["sw", "w", "nw", "n", "ne", "e", "se", "s"];
+            var side = _.find(sides, function(value){
+                return handleTarget.hasClass("ui-resizable-" + value);
+            });
+            side = side.toUpperCase()
 
             currentX = e.screenX - e.clientX;
             currentY = e.screenY - e.clientY;
