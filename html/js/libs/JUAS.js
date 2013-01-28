@@ -4,11 +4,10 @@ $(document).ready(function(){
     var finalX, finalY;
     var lr = 0, tb = 0;
     var shiftW = 0, shiftH = 0;
-    var layout, container = $('#container'), side;
+    var container = $('#container'), layout, side;
     var min_width, min_height, max_width, max_height;
 
     var currentX = App.x, currentY = App.y; //Current X,Y of the window
-    var currentW = App.width, currentH = App.height; //Current width/height of the window (including margin)
 
     var observer, observer_conf = { subtree: true, childList: true, attributes: true, characterData: true };
 
@@ -25,16 +24,10 @@ $(document).ready(function(){
                 lr = parser( _.values(container.css(['margin-left', 'margin-right'])) );
                 tb = parser( _.values(container.css(['margin-top', 'margin-bottom'])) );
 
-                var w = container.css("width");
-                w = parseInt(w, 10);
+                var w = parseInt(container.css("width"), 10);
+                var h = parseInt(container.css("height"), 10);
 
-                var h = container.css("height");
-                h = parseInt(h, 10);
-
-                currentW = w + lr;
-                currentH = h + tb;
-
-                App.resize(currentX, currentY, currentW, currentH);
+                App.resize(currentX, currentY, w + lr, h + tb);
             }
         });
     });
@@ -122,8 +115,8 @@ $(document).ready(function(){
             currentX = finalX;
             currentY = finalY;
 
-            currentW = ui.size.width;
-            currentH = ui.size.height;
+            var currentW = ui.size.width;
+            var currentH = ui.size.height;
 
             var diffW = ui.originalSize.width - currentW;
             var diffH = ui.originalSize.height - currentH;
@@ -233,12 +226,7 @@ $(document).ready(function(){
             }
 
             App.resize(currentX, currentY, currentW, currentH);
-
-            container.width(currentW - lr);
-            container.height(currentH - tb);
-
-            container.css("left", "0px");
-            container.css("top", "0px");
+            container.css({ left: "0px", top: "0px", width: currentW - lr, height: currentH - tb });
 
             e.preventDefault();
 
