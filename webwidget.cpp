@@ -42,10 +42,8 @@ WebWidget::WebWidget(QApplication *app){
     ws->setAttribute(QWebSettings::OfflineWebApplicationCacheEnabled, true);
 
 #ifdef QT_NO_DEBUG
-    ws->setAttribute(QWebSettings::TiledBackingStoreEnabled, true); // ?
-#endif
-
-#ifndef QT_NO_DEBUG
+    setStyleSheet("QWidget { background-color: none; background: transparent; }");
+#else
     webInspector = new QWebInspector();
     webInspector->setPage(gv->webView()->page());
     webInspector->setGeometry(getCustomGeometry(WebWidget::DebugWindow));
