@@ -3,7 +3,7 @@ var DEBUG = true;
 $(document).ready(function(){
 
     var lr, tb;
-    var layout, container = $('#container');
+    var layout, container = $('#container'), handleClass;
     var currentX = App.x, currentY = App.y; //Current X,Y of the window
     var currentW = App.width, currentH = App.height; //Current width/height of the window (including margin)
     var shiftW = 0, shiftH = 0; //Used for resizing
@@ -59,7 +59,7 @@ $(document).ready(function(){
         start: function(e, ui){
             observer.stop();
 
-            handleTarget = $(e.originalEvent.target);
+            handleClass = $(e.originalEvent.target).attr("class");
 
             startX = e.screenX - e.pageX;
             startY = e.screenY - e.pageY;
@@ -78,11 +78,7 @@ $(document).ready(function(){
             //      *SW           SE*
             //      \*******S*******/
 
-            var sides = ["sw", "w", "nw", "n", "ne", "e", "se", "s"];
-            var side = _.find(sides, function(value){
-                return handleTarget.hasClass("ui-resizable-" + value);
-            });
-            side = side.toUpperCase()
+            var side = handleClass.match(/(?:^| )ui-resizable-(.{1,2})(?: |$)/)[1];
 
             currentX = e.screenX - e.clientX;
             currentY = e.screenY - e.clientY;
@@ -99,16 +95,16 @@ $(document).ready(function(){
             var diffH = ui.originalSize.height - currentH;
 
             switch(side){
-                case "E":
-                case "SE":
-                case "S":
+                case "e":
+                case "se":
+                case "s":
                     currentW = currentW + lr;
 
                     currentH = currentH + tb;
 
                     break;
 
-                case "SW":
+                case "sw":
                     currentH = currentH + tb;
 
                     if(!_.isNull(min_width) && shiftW + currentW + lr <= min_width){
@@ -123,7 +119,7 @@ $(document).ready(function(){
 
                     break;
 
-                case "W":
+                case "w":
 
                     if(!_.isNull(min_width) && shiftW + currentW + lr <= min_width){
                         currentW = min_width;
@@ -137,7 +133,7 @@ $(document).ready(function(){
 
                     break;
 
-                case "NW":
+                case "nw":
 
                     if(!_.isNull(min_width) && shiftW + currentW + lr <= min_width){
                         currentW = min_width;
@@ -161,7 +157,7 @@ $(document).ready(function(){
 
                     break;
 
-                case "N":
+                case "n":
 
                     if(!_.isNull(min_height) && shiftH + currentH + tb <= min_height){
                         currentH = min_height;
@@ -175,7 +171,7 @@ $(document).ready(function(){
 
                     break;
 
-                case "NE":
+                case "ne":
                     currentW = currentW + lr;
 
                     if(!_.isNull(min_height) && shiftH + currentH + tb <= min_height){
@@ -200,6 +196,7 @@ $(document).ready(function(){
             container.css("top", "0px");
 
             e.preventDefault();
+
             //TODO: dispatch only if changed
             EventBus.dispatch("window_resize", e, ui);
 
