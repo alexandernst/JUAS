@@ -7,8 +7,6 @@ $(document).ready(function(){
     var container = $('#container'), layout, side;
     var min_width, min_height, max_width, max_height;
 
-    var currentX = App.x, currentY = App.y; //Current X,Y of the window
-
     var observer, observer_conf = { subtree: true, childList: true, attributes: true, characterData: true };
 
     var parser = _.memoize(function(margins){
@@ -27,7 +25,7 @@ $(document).ready(function(){
                 var w = parseInt(container.css("width"), 10);
                 var h = parseInt(container.css("height"), 10);
 
-                App.resize(currentX, currentY, w + lr, h + tb);
+                App.resize(App.x, App.y, w + lr, h + tb);
             }
         });
     });
@@ -112,8 +110,8 @@ $(document).ready(function(){
 
         resize: function(e, ui){
 
-            currentX = finalX;
-            currentY = finalY;
+            var currentX = finalX;
+            var currentY = finalY;
 
             var currentW = ui.size.width;
             var currentH = ui.size.height;
@@ -265,8 +263,6 @@ $(document).ready(function(){
 
         var f_mousemove = function(e){
             e.preventDefault();
-            currentX = e.screenX - e.pageX;
-            currentY = e.screenY - e.pageY;
             App.mouseMoveEvent(e.screenX, e.screenY);
         };
 
