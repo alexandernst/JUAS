@@ -1,6 +1,7 @@
 var DEBUG = true;
 
 $(document).ready(function(){
+    "use strict";
 
     var lr, tb;
     var min_width, min_height, max_width, max_height;
@@ -13,7 +14,7 @@ $(document).ready(function(){
 
     var parser = _.memoize(function(margins){
         return _.reduce(margins, function(memo, num){
-            return memo + (parseInt(num) === NaN ? 0 : parseInt(num));
+            return memo + (parseInt(num, 10) === NaN ? 0 : parseInt(num, 10));
         }, 0);
     });
     function parse(sides){
@@ -23,10 +24,10 @@ $(document).ready(function(){
     function calc_margin(){
         lr = parse(['margin-left', 'margin-right']);
         tb = parse(['margin-top', 'margin-bottom']);
-    };
+    }
     calc_margin();
 
-    observer = new WebKitMutationObserver(function(mutations, observer) {
+    observer = new WebKitMutationObserver(function(mutations, observer){
         mutations.forEach(function(mutation){
             if(mutation.target.id == container.attr("id") && mutation.type == "attributes"){
                 calc_margin();
@@ -37,11 +38,11 @@ $(document).ready(function(){
 
     observer.start = function(){
         observer.observe(document, observer_conf);
-    }
+    };
 
     observer.stop = function(){
         observer.disconnect();
-    }
+    };
 
     observer.start();
 
@@ -253,7 +254,7 @@ $(document).ready(function(){
             currentX = e.screenX - e.pageX;
             currentY = e.screenY - e.pageY;
             App.mouseMoveEvent(e.screenX, e.screenY);
-        }
+        };
 
         $(document).on("mousemove", f_mousemove);
 
@@ -283,15 +284,15 @@ $(document).ready(function(){
 
     function debug_window_drag(e){
         e = e.target;
-        oldMouseX = e.screenX - (e.screenX - e.pageX - currentX);
-        oldMouseY = e.screenY - (e.screenX - e.pageX - currentY);
+        var oldMouseX = e.screenX - (e.screenX - e.pageX - currentX);
+        var oldMouseY = e.screenY - (e.screenX - e.pageX - currentY);
         //console.log("Mouse drag from %s:%s to %s:%s", oldMouseX, oldMouseY, e.screenX, e.screenY);
     }
 
     function debug_window_move(e){
         e = e.target;
-        newX = e.screenX - e.pageX;
-        newY = e.screenY - e.pageY;
+        var newX = e.screenX - e.pageX;
+        var newY = e.screenY - e.pageY;
         //console.log("Window position change from %s:%s to %s:%s", currentX, currentY, newX, newY);
     }
 
