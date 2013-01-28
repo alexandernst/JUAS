@@ -9,7 +9,7 @@ $(document).ready(function(){
     var currentX = App.x, currentY = App.y; //Current X,Y of the window
     var currentW = App.width, currentH = App.height; //Current width/height of the window (including margin)
     var shiftW = 0, shiftH = 0; //Used for resizing
-    var startX, startY, startW, startH; //Used every time a resize is started
+    var startX, startY, finalX, finalY, startW, startH; //Used every time a resize is started
     var observer, observer_conf = { subtree: true, childList: true, attributes: true, characterData: true };
 
     var parser = _.memoize(function(margins){
@@ -75,8 +75,37 @@ $(document).ready(function(){
             startX = e.screenX - e.pageX;
             startY = e.screenY - e.pageY;
 
-            startW = ui.size.width;
-            startH = ui.size.height;
+            startW = ui.originalSize.width;
+            startH = ui.originalSize.height;
+
+            switch(side){
+                case "e":
+                case "se":
+                case "s":
+                    //Fix to upper left corner
+                    finalX = startX;
+                    finalY = startY;
+                    break;
+
+                case "sw":
+                case "w":
+                    //Fix to upper right corner
+                    finalX = startX + startW;
+                    finalY = startY;
+                    break;
+
+                case "nw":
+                    //Fix to bottom right corner
+                    finalX = startX + startW;
+                    finalY = startY + startH;
+                    break;
+
+                case "n":
+                case "ne":
+                    //Fix to bottom left corner
+                    finalX = startX;
+                    finalY = startY + startH;
+            }
 
             min_width = container.resizable("option", "minWidth");
             min_height = container.resizable("option", "minHeight");
@@ -86,11 +115,11 @@ $(document).ready(function(){
 
         resize: function(e, ui){
 
-            currentX = e.screenX - e.clientX;
-            currentY = e.screenY - e.clientY;
-
             currentW = ui.size.width;
             currentH = ui.size.height;
+
+            currentX = finalX;
+            currentY = finalY;
 
             var diffW = ui.originalSize.width - currentW;
             var diffH = ui.originalSize.height - currentH;
@@ -99,13 +128,11 @@ $(document).ready(function(){
                 case "e":
                 case "se":
                 case "s":
-                    currentW = currentW + lr;
-
-                    currentH = currentH + tb;
-
+                    //Do nothing
                     break;
 
                 case "sw":
+
                     currentH = currentH + tb;
 
                     if(!_.isNull(min_width) && shiftW + currentW + lr <= min_width){
@@ -113,10 +140,11 @@ $(document).ready(function(){
                     }else if(!_.isNull(max_width) && shiftW + currentW + lr >= max_width){
                         currentW = max_width;
                     }else{
-                        currentX += diffW;
                         shiftW -= diffW;
                         currentW = ui.originalSize.width + lr + shiftW;
                     }
+
+                    currentX -= currentW;
 
                     break;
 
@@ -127,10 +155,11 @@ $(document).ready(function(){
                     }else if(!_.isNull(max_width) && shiftW + currentW + lr >= max_width){
                         currentW = max_width;
                     }else{
-                        currentX += diffW;
                         shiftW -= diffW;
                         currentW = ui.originalSize.width + lr + shiftW;
                     }
+
+                    currentX -= currentW;
 
                     break;
 
@@ -141,7 +170,6 @@ $(document).ready(function(){
                     }else if(!_.isNull(max_width) && shiftW + currentW + lr >= max_width){
                         currentW = max_width;
                     }else{
-                        currentX += diffW;
                         shiftW -= diffW;
                         currentW = ui.originalSize.width + lr + shiftW;
                     }
@@ -151,10 +179,12 @@ $(document).ready(function(){
                     }else if(!_.isNull(max_height) && shiftH + currentH + tb >= max_height){
                         currentH = max_height;
                     }else{
-                        currentY += diffH;
                         shiftH -= diffH;
                         currentH = ui.originalSize.height + tb + shiftH;
                     }
+
+                    currentX -= currentW;
+                    currentY -= currentH;
 
                     break;
 
@@ -165,14 +195,16 @@ $(document).ready(function(){
                     }else if(!_.isNull(max_height) && shiftH + currentH + tb >= max_height){
                         currentH = max_height;
                     }else{
-                        currentY += diffH;
                         shiftH -= diffH;
                         currentH = ui.originalSize.height + tb + shiftH;
                     }
 
+                    currentY -= currentH;
+
                     break;
 
                 case "ne":
+
                     currentW = currentW + lr;
 
                     if(!_.isNull(min_height) && shiftH + currentH + tb <= min_height){
@@ -180,10 +212,11 @@ $(document).ready(function(){
                     }else if(!_.isNull(max_height) && shiftH + currentH + tb >= max_height){
                         currentH = max_height;
                     }else{
-                        currentY += diffH;
                         shiftH -= diffH;
                         currentH = ui.originalSize.height + tb + shiftH;
                     }
+
+                    currentY -= currentH;
 
                     break;
             }
