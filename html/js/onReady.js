@@ -3,6 +3,7 @@ var DEBUG = true;
 $(document).ready(function(){
 
     var lr, tb;
+    var min_width, min_height, max_width, max_height;
     var layout, container = $('#container'), handleClass;
     var currentX = App.x, currentY = App.y; //Current X,Y of the window
     var currentW = App.width, currentH = App.height; //Current width/height of the window (including margin)
@@ -66,6 +67,11 @@ $(document).ready(function(){
 
             startW = ui.size.width;
             startH = ui.size.height;
+
+            min_width = container.resizable("option", "minWidth");
+            min_height = container.resizable("option", "minHeight");
+            max_width = container.resizable("option", "maxWidth");
+            max_height = container.resizable("option", "maxHeight");
         },
 
         resize: function(e, ui){
@@ -85,11 +91,6 @@ $(document).ready(function(){
 
             currentW = ui.size.width;
             currentH = ui.size.height;
-
-            var min_width = container.resizable("option", "minWidth");
-            var min_height = container.resizable("option", "minHeight");
-            var max_width = container.resizable("option", "maxWidth");
-            var max_height = container.resizable("option", "maxHeight");
 
             var diffW = ui.originalSize.width - currentW;
             var diffH = ui.originalSize.height - currentH;
