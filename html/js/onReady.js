@@ -14,21 +14,16 @@ $(document).ready(function(){
 
     var parser = _.memoize(function(margins){
         return _.reduce(margins, function(memo, num){
-            return memo + (parseInt(num, 10) === NaN ? 0 : parseInt(num, 10));
+            return memo + ( _.isNaN(parseInt(num, 10)) ? 0 : parseInt(num, 10));
         }, 0);
     });
-
-    function calc_margin(){
-        lr = parser( _.values(container.css(['margin-left', 'margin-right'])) );
-        tb = parser( _.values(container.css(['margin-top', 'margin-bottom'])) );
-    }
-    calc_margin();
-
 
     observer = new WebKitMutationObserver(function(mutations, observer){
         mutations.forEach(function(mutation){
             if(mutation.target.id === container.attr("id") && mutation.type === "attributes"){
-                calc_margin();
+
+                lr = parser( _.values(container.css(['margin-left', 'margin-right'])) );
+                tb = parser( _.values(container.css(['margin-top', 'margin-bottom'])) );
 
                 var w = container.css("width");
                 w = parseInt(w, 10);
@@ -259,12 +254,12 @@ $(document).ready(function(){
     $("#minimize").on("mouseup", function(e){
         e.preventDefault();
         App.minimize();
-	});
+    });
 
     $("#maximize").on("mouseup", function(e){
         e.preventDefault();
         App.maximize();
-	});
+    });
 
     $("#quit").on("mouseup", function(e){
         e.preventDefault();
