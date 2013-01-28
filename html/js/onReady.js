@@ -1,15 +1,15 @@
-var DEBUG = true;
-
 $(document).ready(function(){
     "use strict";
 
-    var lr, tb;
-    var min_width, min_height, max_width, max_height;
+    var finalX, finalY;
+    var lr = 0, tb = 0;
+    var shiftW = 0, shiftH = 0;
     var layout, container = $('#container'), side;
+    var min_width, min_height, max_width, max_height;
+
     var currentX = App.x, currentY = App.y; //Current X,Y of the window
     var currentW = App.width, currentH = App.height; //Current width/height of the window (including margin)
-    var shiftW = 0, shiftH = 0; //Used for resizing
-    var startX, startY, finalX, finalY, startW, startH; //Used every time a resize is started
+
     var observer, observer_conf = { subtree: true, childList: true, attributes: true, characterData: true };
 
     var parser = _.memoize(function(margins){
@@ -17,21 +17,29 @@ $(document).ready(function(){
             return memo + (parseInt(num, 10) === NaN ? 0 : parseInt(num, 10));
         }, 0);
     });
-    function parse(sides){
-        var margins = _.values(container.css(sides));
-        return parser(margins);
-    }
+
     function calc_margin(){
-        lr = parse(['margin-left', 'margin-right']);
-        tb = parse(['margin-top', 'margin-bottom']);
+        lr = parser( _.values(container.css(['margin-left', 'margin-right'])) );
+        tb = parser( _.values(container.css(['margin-top', 'margin-bottom'])) );
     }
     calc_margin();
 
+
     observer = new WebKitMutationObserver(function(mutations, observer){
         mutations.forEach(function(mutation){
-            if(mutation.target.id == container.attr("id") && mutation.type == "attributes"){
+            if(mutation.target.id === container.attr("id") && mutation.type === "attributes"){
                 calc_margin();
-                App.resize(currentX, currentY, currentW + lr, currentH + tb);
+
+                var w = container.css("width");
+                w = parseInt(w, 10);
+
+                var h = container.css("height");
+                h = parseInt(h, 10);
+
+                currentW = w + lr;
+                currentH = h + tb;
+
+                App.resize(currentX, currentY, currentW, currentH);
             }
         });
     });
@@ -72,11 +80,11 @@ $(document).ready(function(){
             var handleClass = $(e.originalEvent.target).attr("class");
             side = handleClass.match(/(?:^| )ui-resizable-(.{1,2})(?: |$)/)[1];
 
-            startX = e.screenX - e.pageX;
-            startY = e.screenY - e.pageY;
+            var startX = App.x;
+            var startY = App.y;
 
-            startW = ui.originalSize.width;
-            startH = ui.originalSize.height;
+            var startW = App.width;
+            var startH = App.height;
 
             switch(side){
                 case "e":
@@ -105,6 +113,7 @@ $(document).ready(function(){
                     //Fix to bottom left corner
                     finalX = startX;
                     finalY = startY + startH;
+                    break;
             }
 
             min_width = container.resizable("option", "minWidth");
@@ -115,11 +124,11 @@ $(document).ready(function(){
 
         resize: function(e, ui){
 
-            currentW = ui.size.width;
-            currentH = ui.size.height;
-
             currentX = finalX;
             currentY = finalY;
+
+            currentW = ui.size.width;
+            currentH = ui.size.height;
 
             var diffW = ui.originalSize.width - currentW;
             var diffH = ui.originalSize.height - currentH;
@@ -128,7 +137,10 @@ $(document).ready(function(){
                 case "e":
                 case "se":
                 case "s":
-                    //Do nothing
+
+                    currentW += lr;
+                    currentH += tb;
+
                     break;
 
                 case "sw":
@@ -149,6 +161,8 @@ $(document).ready(function(){
                     break;
 
                 case "w":
+
+                    currentH += tb;
 
                     if(!_.isNull(min_width) && shiftW + currentW + lr <= min_width){
                         currentW = min_width;
@@ -189,6 +203,8 @@ $(document).ready(function(){
                     break;
 
                 case "n":
+
+                    currentW += lr;
 
                     if(!_.isNull(min_height) && shiftH + currentH + tb <= min_height){
                         currentH = min_height;
@@ -231,17 +247,10 @@ $(document).ready(function(){
 
             e.preventDefault();
 
-            //TODO: dispatch only if changed
-            EventBus.dispatch("window_resize", e, ui);
-
         },
 
         stop: function(e, ui){
             e.preventDefault();
-
-            //TODO: dispatch only if changed
-            EventBus.dispatch("window_resized", e, ui);
-
             shiftW = shiftH = 0;
             observer.start();
         }
@@ -269,20 +278,10 @@ $(document).ready(function(){
             return;
         }
 
-        startX = e.screenX - e.pageX;
-        startY = e.screenY - e.pageY;
-
         App.mousePressEvent(e.pageX, e.pageY);
 
         var f_mousemove = function(e){
             e.preventDefault();
-
-            //TODO: dispatch only if changed
-            EventBus.dispatch("window_drag", e);
-
-            //TODO: dispatch only if changed
-            EventBus.dispatch("window_move", e);
-
             currentX = e.screenX - e.pageX;
             currentY = e.screenY - e.pageY;
             App.mouseMoveEvent(e.screenX, e.screenY);
@@ -292,10 +291,6 @@ $(document).ready(function(){
 
         $(document).one("mouseup", function(e){
             e.preventDefault();
-
-            //TODO: dispatch only if changed
-            EventBus.dispatch("window_moved", e);
-
             $(document).off("mousemove", f_mousemove);
         });
 
@@ -304,42 +299,5 @@ $(document).ready(function(){
             return false;
         });
     });
-
-    function debug_window_resize(e, ui){
-        e = e.target;
-        //console.log("Size change from %s:%s to %s:%s", ui.originalSize.width + lr, ui.originalSize.height + tb, currentW, currentH);
-    }
-
-    function debug_window_resized(e, ui){
-        console.log("Size changed from %s:%s to %s:%s", startW, startH, currentW, currentH);
-    }
-
-    function debug_window_drag(e){
-        e = e.target;
-        var oldMouseX = e.screenX - (e.screenX - e.pageX - currentX);
-        var oldMouseY = e.screenY - (e.screenX - e.pageX - currentY);
-        //console.log("Mouse drag from %s:%s to %s:%s", oldMouseX, oldMouseY, e.screenX, e.screenY);
-    }
-
-    function debug_window_move(e){
-        e = e.target;
-        var newX = e.screenX - e.pageX;
-        var newY = e.screenY - e.pageY;
-        //console.log("Window position change from %s:%s to %s:%s", currentX, currentY, newX, newY);
-    }
-
-    function debug_window_moved(e){
-        console.log("Window position changed from %s:%s to %s:%s", startX, startY, currentX, currentY);
-    }
-
-    if(DEBUG){
-        EventBus.addEventListener("window_resize", debug_window_resize);
-        EventBus.addEventListener("window_resized", debug_window_resized);
-
-        EventBus.addEventListener("window_drag", debug_window_drag);
-
-        EventBus.addEventListener("window_move", debug_window_move);
-        EventBus.addEventListener("window_moved", debug_window_moved);
-    }
 
 });
