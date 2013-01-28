@@ -5,7 +5,7 @@ $(document).ready(function(){
 
     var lr, tb;
     var min_width, min_height, max_width, max_height;
-    var layout, container = $('#container'), handleClass;
+    var layout, container = $('#container'), side;
     var currentX = App.x, currentY = App.y; //Current X,Y of the window
     var currentW = App.width, currentH = App.height; //Current width/height of the window (including margin)
     var shiftW = 0, shiftH = 0; //Used for resizing
@@ -61,7 +61,16 @@ $(document).ready(function(){
         start: function(e, ui){
             observer.stop();
 
-            handleClass = $(e.originalEvent.target).attr("class");
+            //      /*******N*******\
+            //      *NW           NE*
+            //      *               *
+            //      W               E
+            //      *               *
+            //      *SW           SE*
+            //      \*******S*******/
+
+            var handleClass = $(e.originalEvent.target).attr("class");
+            side = handleClass.match(/(?:^| )ui-resizable-(.{1,2})(?: |$)/)[1];
 
             startX = e.screenX - e.pageX;
             startY = e.screenY - e.pageY;
@@ -76,16 +85,6 @@ $(document).ready(function(){
         },
 
         resize: function(e, ui){
-
-            //      /*******N*******\
-            //      *NW           NE*
-            //      *               *
-            //      W               E
-            //      *               *
-            //      *SW           SE*
-            //      \*******S*******/
-
-            var side = handleClass.match(/(?:^| )ui-resizable-(.{1,2})(?: |$)/)[1];
 
             currentX = e.screenX - e.clientX;
             currentY = e.screenY - e.clientY;
