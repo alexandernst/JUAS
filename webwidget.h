@@ -62,6 +62,7 @@ class WebWidget : public QMainWindow
 #endif
 
         QRect getCustomGeometry(WindowType wt);
+        QAction *createTrayIconMenuItem(QString id, QString text, QString event, QString icon);
 
     private slots:
         void cleanUp();

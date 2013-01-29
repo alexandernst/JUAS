@@ -239,18 +239,23 @@ void WebWidget::showTrayIconMessage(QString title, QString msg, QString icon, in
     }
 }
 
+QAction *WebWidget::createTrayIconMenuItem(QString id, QString text, QString event, QString icon){
+    QAction *action;
+
+    if(icon == ""){
+        action = new QAction(text, trayIconMenu);
+    }else{
+        action = new QAction(QIcon(icon), text, trayIconMenu);
+    }
+
+    action->setProperty("ID", id);
+    action->setProperty("EventBus", event);
+    return action;
+}
+
 void WebWidget::addTrayIconMenuItem(QString id, QString text, QString event, QString icon){
     if(trayIcon != 0){
-        QAction *action;
-
-        if(icon == ""){
-            action = new QAction(text, trayIconMenu);
-        }else{
-            action = new QAction(QIcon(icon), text, trayIconMenu);
-        }
-
-        action->setProperty("ID", id);
-        action->setProperty("EventBus", event);
+        QAction *action = createTrayIconMenuItem(id, text, event, icon);;
         trayIconMenu->addAction(action);
     }
 }
@@ -261,18 +266,8 @@ void WebWidget::addTrayIconMenuItemBefore(QString id_menu_item, QString id, QStr
         for(QList<QAction*>::iterator it = actions.begin(); it != actions.end(); ++it){
             QAction *action = qobject_cast<QAction *>(*it);
             if(id_menu_item == action->property("ID").toString()){
-                QAction *new_action;
-
-                if(icon == ""){
-                    new_action = new QAction(text, trayIconMenu);
-                }else{
-                    new_action = new QAction(QIcon(icon), text, trayIconMenu);
-                }
-
-                new_action->setProperty("ID", id);
-                new_action->setProperty("EventBus", event);
+                QAction *new_action = createTrayIconMenuItem(id, text, event, icon);
                 trayIconMenu->insertAction(action, new_action);
-
                 break;
             }
         }
@@ -294,17 +289,7 @@ void WebWidget::addTrayIconMenuItemAfter(QString id_menu_item, QString id, QStri
             action = 0;
         }
 
-        QAction *new_action;
-
-        if(icon == ""){
-            new_action = new QAction(text, trayIconMenu);
-        }else{
-            new_action = new QAction(QIcon(icon), text, trayIconMenu);
-        }
-
-        new_action->setProperty("ID", id);
-        new_action->setProperty("EventBus", event);
-
+        QAction *new_action = createTrayIconMenuItem(id, text, event, icon);;
         if(action != 0){
             trayIconMenu->insertAction(action, new_action);
         }else{
