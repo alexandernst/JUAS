@@ -186,8 +186,9 @@ QRect WebWidget::getCustomGeometry(WindowType wt){
 |
 \********************/
 
-//TODO: Support adding menu items before/after specific menu item
 //TODO: Support submenus
+//TODO: Support separators
+//TODO: Support changing icon on-the-fly
 
 void WebWidget::createTrayIcon(QString icon){
     if(trayIcon == 0){
@@ -215,7 +216,9 @@ void WebWidget::hideTrayIcon(){
 }
 
 void WebWidget::setTrayIconTitle(QString title){
-    trayIcon->setToolTip(title);
+    if(trayIcon != 0){
+        trayIcon->setToolTip(title);
+    }
 }
 
 void WebWidget::showTrayIconMessage(QString title, QString msg, QString icon, int msecs){
@@ -236,7 +239,7 @@ void WebWidget::showTrayIconMessage(QString title, QString msg, QString icon, in
     }
 }
 
-void WebWidget::addTrayIconMenuItem(QString id, QString text, QString event, QString icon = ""){
+void WebWidget::addTrayIconMenuItem(QString id, QString text, QString event, QString icon){
     if(trayIcon != 0){
         QAction *action;
 
@@ -252,6 +255,65 @@ void WebWidget::addTrayIconMenuItem(QString id, QString text, QString event, QSt
     }
 }
 
+void WebWidget::addTrayIconMenuItemBefore(QString id_menu_item, QString id, QString text, QString event, QString icon){
+    if(trayIcon != 0){
+        QList<QAction*> actions = trayIconMenu->actions();
+        for(QList<QAction*>::iterator it = actions.begin(); it != actions.end(); ++it){
+            QAction *action = qobject_cast<QAction *>(*it);
+            if(id_menu_item == action->property("ID").toString()){
+                QAction *new_action;
+
+                if(icon == ""){
+                    new_action = new QAction(text, trayIconMenu);
+                }else{
+                    new_action = new QAction(QIcon(icon), text, trayIconMenu);
+                }
+
+                new_action->setProperty("ID", id);
+                new_action->setProperty("EventBus", event);
+                trayIconMenu->insertAction(action, new_action);
+
+                break;
+            }
+        }
+    }
+}
+
+void WebWidget::addTrayIconMenuItemAfter(QString id_menu_item, QString id, QString text, QString event, QString icon){
+    if(trayIcon != 0){
+        bool found = false;
+        QAction *action = 0;
+        QList<QAction*> actions = trayIconMenu->actions();
+        for(QList<QAction*>::iterator it = actions.begin(); it != actions.end(); ++it){
+            action = qobject_cast<QAction *>(*it);
+            if(id_menu_item == action->property("ID").toString()){
+                found = true;
+            }else if(found){
+                break;
+            }
+            action = 0;
+        }
+
+        QAction *new_action;
+
+        if(icon == ""){
+            new_action = new QAction(text, trayIconMenu);
+        }else{
+            new_action = new QAction(QIcon(icon), text, trayIconMenu);
+        }
+
+        new_action->setProperty("ID", id);
+        new_action->setProperty("EventBus", event);
+
+        if(action != 0){
+            trayIconMenu->insertAction(action, new_action);
+        }else{
+            trayIconMenu->addAction(new_action);
+        }
+
+    }
+}
+
 void WebWidget::removeTrayIconMenuItem(QString id){
     if(trayIcon != 0 && !trayIconMenu->isEmpty()){
         QList<QAction*> actions = trayIconMenu->actions();
@@ -259,6 +321,7 @@ void WebWidget::removeTrayIconMenuItem(QString id){
             QAction *action = qobject_cast<QAction *>(*it);
             if(id == action->property("ID").toString()){
                 trayIconMenu->removeAction(action);
+                break;
             }
         }
     }
