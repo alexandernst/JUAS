@@ -188,8 +188,6 @@ QRect WebWidget::getCustomGeometry(WindowType wt){
 
 //TODO: Support messageClicked() signal http://harmattan-dev.nokia.com/docs/library/html/qt4/qsystemtrayicon.html#messageClicked
 //TODO: Support icon in addTrayIconMenuItem()
-//TODO: Support setIcon() in trayIcon
-//TODO: Support setTitle() in trayIcon
 
 void WebWidget::createTrayIcon(QString icon){
     if(trayIcon == 0){
@@ -214,6 +212,10 @@ void WebWidget::hideTrayIcon(){
     if(trayIcon != 0){
         trayIcon->hide();
     }
+}
+
+void WebWidget::setTrayIconTitle(QString title){
+    trayIcon->setToolTip(title);
 }
 
 void WebWidget::showTrayIconMessage(QString title, QString msg, QString icon, int msecs){
