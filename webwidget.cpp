@@ -188,7 +188,6 @@ QRect WebWidget::getCustomGeometry(WindowType wt){
 
 //TODO: Support submenus
 //TODO: Support separators
-//TODO: Support changing icon on-the-fly
 
 void WebWidget::createTrayIcon(QString icon){
     if(trayIcon == 0){
@@ -200,6 +199,12 @@ void WebWidget::createTrayIcon(QString icon){
 
         QObject::connect(trayIconMenu, SIGNAL(triggered(QAction*)), this, SLOT(trayIconMenuClicked(QAction*)));
         QObject::connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(trayIconClicked(QSystemTrayIcon::ActivationReason)));
+    }
+}
+
+void WebWidget::setTrayIconIcon(QString icon){
+    if(trayIcon != 0){
+        trayIcon->setIcon(QIcon(icon));
     }
 }
 
