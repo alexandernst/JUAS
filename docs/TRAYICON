@@ -11,6 +11,14 @@ App.createTrayIcon(icon);
 
 
 /*
+Set a icon to the tray icon.
+icon is a string containing the path of the icon.
+*/
+App.setTrayIconIcon(icon);
+
+
+
+/*
 Add a menu item to the tray icon context menu.
 id is a string containing the id of the item.
 text is a string containing the menu item caption.
