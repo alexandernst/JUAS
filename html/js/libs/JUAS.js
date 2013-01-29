@@ -280,4 +280,6 @@ $(document).ready(function(){
         });
     });
 
+    App.createTrayIcon("html/img/trayicon.png");
+
 });

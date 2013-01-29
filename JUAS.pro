@@ -16,10 +16,6 @@ HEADERS += \
     webwidget.h \
     webgraphicsview.h
 
-RESOURCES += \
-    resources.qrc
-
-
 defineTest(addHTML) {
     for(deploymentfolder, DEPLOYMENTFOLDERS) {
         item = item$${deploymentfolder}
