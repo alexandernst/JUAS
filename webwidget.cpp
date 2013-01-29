@@ -186,8 +186,8 @@ QRect WebWidget::getCustomGeometry(WindowType wt){
 |
 \********************/
 
-//TODO: Support messageClicked() signal http://harmattan-dev.nokia.com/docs/library/html/qt4/qsystemtrayicon.html#messageClicked
-//TODO: Support icon in addTrayIconMenuItem()
+//TODO: Support adding menu items before/after specific menu item
+//TODO: Support submenus
 
 void WebWidget::createTrayIcon(QString icon){
     if(trayIcon == 0){
@@ -236,9 +236,16 @@ void WebWidget::showTrayIconMessage(QString title, QString msg, QString icon, in
     }
 }
 
-void WebWidget::addTrayIconMenuItem(QString id, QString text, QString event){
+void WebWidget::addTrayIconMenuItem(QString id, QString text, QString event, QString icon = ""){
     if(trayIcon != 0){
-        QAction *action = new QAction(text, trayIconMenu);
+        QAction *action;
+
+        if(icon == ""){
+            action = new QAction(text, trayIconMenu);
+        }else{
+            action = new QAction(QIcon(icon), text, trayIconMenu);
+        }
+
         action->setProperty("ID", id);
         action->setProperty("EventBus", event);
         trayIconMenu->addAction(action);

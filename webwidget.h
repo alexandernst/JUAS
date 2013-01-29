@@ -37,7 +37,7 @@ class WebWidget : public QMainWindow
         Q_INVOKABLE void resize(int x, int y, int w, int h);
         Q_INVOKABLE void mouseMoveEvent(int dragX, int dragY);
         Q_INVOKABLE void mousePressEvent(int fromBorderX, int fromBorderY);
-        Q_INVOKABLE void addTrayIconMenuItem(QString id, QString text, QString event);
+        Q_INVOKABLE void addTrayIconMenuItem(QString id, QString text, QString event, QString icon);
         Q_INVOKABLE void showTrayIconMessage(QString title, QString msg, QString icon = "NoIcon", int msecs = 10000);
 
     private:
