@@ -25,6 +25,28 @@ App.addTrayIconMenuItem(id, text, event, [icon]);
 
 
 /*
+Add a menu item to the tray icon context menu before a specific
+item.
+id_menu_item a a string containing the id of the item before which
+you'd like to insert the new item.
+The rest of parameters are the same as in 'addTrayIconMenuItem'.
+*/
+App.addTrayIconMenuItemBefore(id_menu_item, id, text, event, [icon]);
+
+
+
+/*
+Add a menu item to the tray icon context menu after a specific
+item.
+id_menu_item a a string containing the id of the item after which
+you'd like to insert the new item.
+The rest of parameters are the same as in 'addTrayIconMenuItem'.
+*/
+App.addTrayIconMenuItemAfter(id_menu_item, id, text, event, [icon]);
+
+
+
+/*
 Show a notification.
 title is a string containing the title of the notification.
 msg is a string containing the message of the notification.
