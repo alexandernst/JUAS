@@ -49,8 +49,8 @@ $(document).ready(function(){
         handles: 'n, e, s, w, ne, se, sw, nw', // 'all'
         minWidth: 300,
         minHeight: 300,
-        maxWidth: 1250,
-        maxHeight: 700,
+        maxWidth: 1500,
+        maxHeight: 750,
 
         start: function(e, ui){
             observer.stop();
@@ -106,6 +106,7 @@ $(document).ready(function(){
             min_height = container.resizable("option", "minHeight");
             max_width = container.resizable("option", "maxWidth");
             max_height = container.resizable("option", "maxHeight");
+
         },
 
         resize: function(e, ui){

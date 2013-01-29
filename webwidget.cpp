@@ -42,13 +42,13 @@ WebWidget::WebWidget(QApplication *app){
     ws->setAttribute(QWebSettings::OfflineWebApplicationCacheEnabled, true);
 
 #ifdef QT_NO_DEBUG
-    setStyleSheet("QWidget { background-color: none; background: transparent; }");
+    setStyleSheet("QWidget { background: transparent; }");
 #else
     webInspector = new QWebInspector();
     webInspector->setPage(gv->webView()->page());
     webInspector->setGeometry(getCustomGeometry(WebWidget::DebugWindow));
 
-    setStyleSheet("QWidget { background-color: green; }");
+    setStyleSheet("QWidget { background: green; }");
 #endif
 
     QObject::connect(app, SIGNAL(aboutToQuit()), this, SLOT(cleanUp()));
