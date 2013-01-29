@@ -31,7 +31,7 @@ class WebWidget : public QMainWindow
         Q_INVOKABLE void hideTrayIcon();
         Q_INVOKABLE void removeTrayIcon();
         Q_INVOKABLE void removeTrayIconMenuItems();
-        Q_INVOKABLE void createTrayIcon(QString icon = "");
+        Q_INVOKABLE void createTrayIcon(QString icon);
         Q_INVOKABLE void setTrayIconTitle(QString title);
         Q_INVOKABLE void removeTrayIconMenuItem(QString id);
         Q_INVOKABLE void resize(int x, int y, int w, int h);
