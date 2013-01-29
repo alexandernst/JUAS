@@ -1,9 +1,12 @@
 /*
-Create a tray icon. Note that further calls to this method 
-won't have any effect as the tray icon has been created already.
+Create a tray icon. 
+icon is a string containing the path of the icon that should be
+used.
+Note that further calls to this method won't have any effect as
+the tray icon has been created already.
 Also, note that the tray icon will be shown immediately.
 */
-App.createTrayIcon();
+App.createTrayIcon(icon);
 
 
 
@@ -13,8 +16,11 @@ id is a string containing the id of the item.
 text is a string containing the menu item caption.
 event is a string containing the name of the event that EventBus
 will trigger when this item is selected.
+icon is a string containing the path of the icon that should be
+drawn at the left side of the text. This last parameter isn't 
+mandatory.
 */
-App.addTrayIconMenuItem(id, text, event);
+App.addTrayIconMenuItem(id, text, event, [icon]);
 
 
 
@@ -46,8 +52,16 @@ App.showTrayIcon();
 /*
 Hide the tray icon. This is not the same as destroying it.
 */
-
 App.hideTrayIcon();
+
+
+
+/*
+Set the tray icon's title/tooltip.
+title is a string
+*/
+App.setTrayIconTitle(title);
+
 
 
 /*
