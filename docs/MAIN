@@ -45,3 +45,39 @@ Set the Window title
 title is a string containing the desired title
 */
 App.setTitle(title);
+
+
+
+/*
+Check if a there is a saved geometry for the window.
+company is a string containing the company name of the
+application.
+app is a string containing the application name.
+Both parameters are necesary because the settings are 
+retrieved using those strings as keys.
+*/
+App.isWindowGeometrySaveAvailable(company, app);
+
+
+
+/*
+Restore a saved geometry of the window.
+company is a string containing the company name of the
+application.
+app is a string containing the application name.
+Both parameters are necesary because the settings are 
+retrieved using those strings as keys.
+*/
+App.restoreWindowGeometry(company, app);
+
+
+
+/*
+Save the geometry of the window.
+company is a string containing the company name of the
+application.
+app is a string containing the application name.
+Both parameters are necesary because the settings are 
+stored using those strings as keys.
+*/
+App.saveWindowGeometry(company, app);

@@ -56,7 +56,6 @@ void WebWidget::createJSBridge(){
     // http://qt-project.org/doc/qt-4.8/qtwebkit-bridge.html
     gv->webView()->page()->mainFrame()->addToJavaScriptWindowObject("App", this);
 
-    show();
 #ifndef QT_NO_DEBUG
     webInspector->show();
 #endif
@@ -134,21 +133,22 @@ QVariantList WebWidget::availableGeometry(){
     return geometry;
 }
 
-//TODO: save/restore geometry. As JS methods?
-/*
+bool WebWidget::isWindowGeometrySaveAvailable(QString company, QString app){
+    QSettings settings(company, app);
+    return settings.contains("geometry") && settings.contains("windowState");
+}
 
- //save
- QSettings settings("JUAS_COMPANY", "JUAS_APP");
- settings.setValue("geometry", saveGeometry());
- settings.setValue("windowState", saveState());
+void WebWidget::saveWindowGeometry(QString company, QString app){
+    QSettings settings(company, app);
+    settings.setValue("geometry", saveGeometry());
+    settings.setValue("windowState", saveState());
+}
 
- //restore
- QSettings settings("JUAS_COMPANY", "JUAS_APP");
- restoreGeometry(settings.value("geometry").toByteArray());
- restoreState(settings.value("windowState").toByteArray());
-
-*/
-
+void WebWidget::restoreWindowGeometry(QString company, QString app){
+    QSettings settings(company, app);
+    restoreGeometry(settings.value("geometry").toByteArray());
+    restoreState(settings.value("windowState").toByteArray());
+}
 
 
 

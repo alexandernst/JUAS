@@ -26,10 +26,13 @@ class WebWidget : public QMainWindow
 
         //Main app
         Q_INVOKABLE QVariantList availableGeometry();
+        Q_INVOKABLE bool isWindowGeometrySaveAvailable(QString company, QString app);
         Q_INVOKABLE void maximize();
         Q_INVOKABLE void minimize();
         Q_INVOKABLE void mouseMoveEvent(int dragX, int dragY);
         Q_INVOKABLE void mousePressEvent(int fromBorderX, int fromBorderY);
+        Q_INVOKABLE void restoreWindowGeometry(QString company, QString app);
+        Q_INVOKABLE void saveWindowGeometry(QString company, QString app);
         Q_INVOKABLE void setTitle(QString title);
         Q_INVOKABLE void quit();
 
