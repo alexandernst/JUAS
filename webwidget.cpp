@@ -22,9 +22,6 @@ WebWidget::WebWidget(QApplication *app){
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowSystemMenuHint);
     setAttribute(Qt::WA_TranslucentBackground, true);
 
-    setGeometry(getCustomGeometry(WebWidget::MainWindow));
-    setWindowTitle("JUAS");
-
     QWebFrame *wf = gv->webView()->page()->mainFrame();
     wf->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
     wf->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAlwaysOff);
@@ -46,7 +43,7 @@ WebWidget::WebWidget(QApplication *app){
 #else
     webInspector = new QWebInspector();
     webInspector->setPage(gv->webView()->page());
-    webInspector->setGeometry(getCustomGeometry(WebWidget::DebugWindow));
+    webInspector->setGeometry(2000, 600, 1300, 400);
 
     setStyleSheet("QWidget { background: green; }");
 #endif
@@ -63,6 +60,12 @@ void WebWidget::createJSBridge(){
 #ifndef QT_NO_DEBUG
     webInspector->show();
 #endif
+}
+
+void WebWidget::setTitle(QString title){
+    setWindowTitle(title);
+    QCoreApplication::setOrganizationName(title);
+    QCoreApplication::setApplicationName(title);
 }
 
 void WebWidget::mousePressEvent(int fromBorderX, int fromBorderY){
@@ -124,53 +127,28 @@ void WebWidget::maximize(){
     }
 }
 
-QRect WebWidget::getCustomGeometry(WindowType wt){
-    //TODO: save/restore geometry. As JS methods?
-    /*
-
-     //save
-     QSettings settings("JUAS_COMPANY", "JUAS_APP");
-     settings.setValue("geometry", saveGeometry());
-     settings.setValue("windowState", saveState());
-
-     //restore
-     QSettings settings("JUAS_COMPANY", "JUAS_APP");
-     restoreGeometry(settings.value("geometry").toByteArray());
-     restoreState(settings.value("windowState").toByteArray());
-
-    */
-
-    QRect *r;
-    float total_width = desktop->availableGeometry().width();
-    float total_height = desktop->availableGeometry().height();
-    float width, height;
-
-    switch(wt){
-        case WebWidget::MainWindow:
-#ifndef QT_NO_DEBUG
-            width = total_width * 0.7; //70% width
-            height = total_height * 0.6; //60% height
-            r = new QRect((total_width - width) / 2, total_height / 2 - height * 0.75, width, height);
-#else
-            width = total_width * 0.7; //70% width
-            height = total_height * 0.7; //70% height
-            r = new QRect((total_width - width) / 2, (total_height - height) / 2, width, height);
-#endif
-            break;
-
-        case WebWidget::DebugWindow:
-            width = total_width * 0.7; //70% width
-            height = total_height * 0.3; //30% height
-            r = new QRect((total_width - width) / 2, total_height - height * 1.05, width, height);
-            break;
-
-        default:
-            r = new QRect(100, 100, 100, 100);
-            break;
-    }
-
-    return *r;
+QVariantList WebWidget::availableGeometry(){
+    QVariantList geometry;
+    QRect ag = desktop->availableGeometry();
+    geometry << ag.x() << ag.y() << ag.width() << ag.height();
+    return geometry;
 }
+
+//TODO: save/restore geometry. As JS methods?
+/*
+
+ //save
+ QSettings settings("JUAS_COMPANY", "JUAS_APP");
+ settings.setValue("geometry", saveGeometry());
+ settings.setValue("windowState", saveState());
+
+ //restore
+ QSettings settings("JUAS_COMPANY", "JUAS_APP");
+ restoreGeometry(settings.value("geometry").toByteArray());
+ restoreState(settings.value("windowState").toByteArray());
+
+*/
+
 
 
 
