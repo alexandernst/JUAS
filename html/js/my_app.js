@@ -10,6 +10,12 @@ $(document).ready(function(){
     //Set the title
     App.setTitle("My app");
 
+    //Set mix/max size limits
+    container.resizable("option", "minWidth", 300);
+    container.resizable("option", "minHeight", 300);
+    container.resizable("option", "maxWidth", 2000);
+    container.resizable("option", "maxHeight", 1000);
+
     //Resize the window and center
     availableGeometry = App.availableGeometry();
     var available_x = availableGeometry[0];
@@ -23,5 +29,8 @@ $(document).ready(function(){
     var y = available_y + ((available_height - height) / 2);
 
     App.resize(x, y, width, height);
+
+    //Show the main window
+    App.show();
 
 });

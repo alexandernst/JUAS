@@ -47,10 +47,6 @@ $(document).ready(function(){
 
     container.resizable({
         handles: 'n, e, s, w, ne, se, sw, nw', // 'all'
-        minWidth: 300,
-        minHeight: 300,
-        maxWidth: 1500,
-        maxHeight: 750,
 
         start: function(e, ui){
             observer.stop();
