@@ -1,0 +1,47 @@
+/*
+Quit the application.
+*/
+App.quit();
+
+
+
+/*
+Minimze the application.
+*/
+App.minimize();
+
+
+
+/*
+Maximize the application.
+*/
+App.maximize();
+
+
+
+/*
+Move and resize the application.
+x is an int containing the x location of the window.
+y is an int containing the y location of the window.
+width is an int containing the width of the window.
+height is an int containing the height of the window.
+*/
+App.resize(x, y, width, height);
+
+
+
+/*
+Get the available width/height and the starting x/y
+space of the desktop.
+The method returns an array containing the values
+in [x, y, width, height] order.
+*/
+App.availableGeometry();
+
+
+
+/*
+Set the Window title
+title is a string containing the desired title
+*/
+App.setTitle(title);
