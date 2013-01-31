@@ -3,7 +3,7 @@
 
 //Qt 5.0 won't minimize frameless windows. TODO: Remove when fixed
 // https://bugreports.qt-project.org/browse/QTBUG-29109
-#define MINIMIZE_PATCH
+//#define MINIMIZE_PATCH
 
 #include <QDebug>
 #include <QCursor>
@@ -22,7 +22,7 @@ class WebWidget : public QMainWindow
     Q_OBJECT
 
     public:
-        WebWidget(QApplication *app);
+        WebWidget();
 
         //Main app
         Q_INVOKABLE QVariantList availableGeometry();

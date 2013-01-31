@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     app.setQuitOnLastWindowClosed(false);
-    new WebWidget(&app);
+    new WebWidget();
 
     return app.exec();
 }

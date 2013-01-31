@@ -2,9 +2,7 @@
 #include <QtWidgets/QAction>
 #include <QAction>
 
-WebWidget::WebWidget(QApplication *app){
-
-    this->app = app;
+WebWidget::WebWidget() : QMainWindow(){
 
     desktop = QApplication::desktop();
 
@@ -19,7 +17,7 @@ WebWidget::WebWidget(QApplication *app){
     setCentralWidget(widget);
 
     // http://qt-project.org/doc/qt-5.0/qtcore/qt.html#WindowType-enum
-    setWindowFlags(Qt::FramelessWindowHint | Qt::WindowSystemMenuHint);
+    setWindowFlags(Qt::FramelessWindowHint | Qt::WindowSystemMenuHint | Qt::WindowMinimizeButtonHint);
     setAttribute(Qt::WA_TranslucentBackground, true);
 
     QWebFrame *wf = gv->webView()->page()->mainFrame();
@@ -48,7 +46,7 @@ WebWidget::WebWidget(QApplication *app){
     setStyleSheet("QWidget { background: green; }");
 #endif
 
-    QObject::connect(app, SIGNAL(aboutToQuit()), this, SLOT(cleanUp()));
+    QObject::connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(cleanUp()));
     QObject::connect(wf, SIGNAL(javaScriptWindowObjectCleared()), this, SLOT(createJSBridge()));
 }
 
