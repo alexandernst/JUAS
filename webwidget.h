@@ -26,6 +26,7 @@ class WebWidget : public QMainWindow
 
         //Main app
         Q_INVOKABLE QVariantList availableGeometry();
+        Q_INVOKABLE void clearSavedWindowGeometry(QString company, QString app);
         Q_INVOKABLE bool isWindowGeometrySaveAvailable(QString company, QString app);
         Q_INVOKABLE void maximize();
         Q_INVOKABLE void minimize();

@@ -133,6 +133,11 @@ QVariantList WebWidget::availableGeometry(){
     return geometry;
 }
 
+void WebWidget::clearSavedWindowGeometry(QString company, QString app){
+    QSettings settings(company, app);
+    settings.clear();
+}
+
 bool WebWidget::isWindowGeometrySaveAvailable(QString company, QString app){
     QSettings settings(company, app);
     return settings.contains("geometry") && settings.contains("windowState");
