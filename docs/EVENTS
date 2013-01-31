@@ -1,0 +1,72 @@
+/*
+You can suscribe to events dispatched by the application when
+certain actions happen.
+To suscribe you just need to know the event name and then
+use the addEventListener method of EventBus.
+Keep reading for examples and a list of events.
+*/
+
+
+
+/*
+Suscribe to an event.
+event_name is a string containing the name of the event to
+which you want to listen.
+function can be the name of a function (not a string but the
+actual name) or an anonymous function, you choose.
+*/
+EventBus.addEventListener(event_name, function);
+
+
+
+/*
+window_resize_start is dispatched when the window starts being
+resized.
+*/
+
+
+
+/*
+window_resize is dispatched every time the window is resized.
+Note that you could get hundreds of that event in between
+window_resize_start and window_resize_stop.
+*/
+
+
+
+/*
+window_resize_stop is dispatched when the window stops 
+resizing.
+*/
+
+
+
+/*
+window_minimize is dispatched when the window is minimized.
+*/
+
+
+
+/*
+window_maximize is dispatched when the window is maximized.
+*/
+
+
+
+/*
+window_drag is dispatched every time the window changes it's 
+position because of a drag caused by the mouse.
+*/
+
+
+
+/*
+app_quit is launched when the close button is clicked.
+Note that if you don't listen to that event, the application
+does exactly what you expect it to do: quit.
+Anyways, if you do listen for that event then the application
+wont quit but just dispatch the app_quit event. That way you're
+able to do whatever you want before quitting the application.
+That means that you'll need to quit the application yourself
+using the quit method of App.
+*/
