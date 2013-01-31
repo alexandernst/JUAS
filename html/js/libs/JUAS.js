@@ -103,10 +103,11 @@ $(document).ready(function(){
             max_width = container.resizable("option", "maxWidth");
             max_height = container.resizable("option", "maxHeight");
 
+            EventBus.dispatch("window_resize_start");
+
         },
 
         resize: function(e, ui){
-
             var currentX = finalX;
             var currentY = finalY;
 
@@ -224,29 +225,36 @@ $(document).ready(function(){
             container.css({ left: "0px", top: "0px", width: currentW - lr, height: currentH - tb });
 
             e.preventDefault();
-
+            EventBus.dispatch("window_resize");
         },
 
         stop: function(e, ui){
             e.preventDefault();
             shiftW = shiftH = 0;
             observer.start();
+            EventBus.dispatch("window_resize_stop");
         }
     });
 
     $("#minimize").on("mouseup", function(e){
         e.preventDefault();
         App.minimize();
+        EventBus.dispatch("window_minimize");
     });
 
     $("#maximize").on("mouseup", function(e){
         e.preventDefault();
         App.maximize();
+        EventBus.dispatch("window_maximize");
     });
 
     $("#quit").on("mouseup", function(e){
         e.preventDefault();
-        App.quit();
+        if(!EventBus.hasEventListener("app_quit")){
+            App.quit();
+        }else{
+            EventBus.dispatch("app_quit");
+        }
     });
 
     $("#bar").mousedown(function(e){
@@ -261,6 +269,7 @@ $(document).ready(function(){
         var f_mousemove = function(e){
             e.preventDefault();
             App.mouseMoveEvent(e.screenX, e.screenY);
+            EventBus.dispatch("window_drag");
         };
 
         $(document).on("mousemove", f_mousemove);
