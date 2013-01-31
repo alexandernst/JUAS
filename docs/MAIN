@@ -1,4 +1,36 @@
 /*
+Get the x position of the window.
+Note that this is not a method but a property.
+*/
+App.x
+
+
+
+/*
+Get the y position of the window.
+Note that this is not a method but a property.
+*/
+App.y
+
+
+
+/*
+Get the width of the window.
+Note that this is not a method but a property.
+*/
+App.width
+
+
+
+/*
+Get the height of the window.
+Note that this is not a method but a property.
+*/
+App.height
+
+
+
+/*
 Quit the application.
 */
 App.quit();
