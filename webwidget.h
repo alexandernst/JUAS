@@ -3,7 +3,7 @@
 
 //Qt 5.0 won't minimize frameless windows. TODO: Remove when fixed
 // https://bugreports.qt-project.org/browse/QTBUG-29109
-//#define MINIMIZE_PATCH
+#define MINIMIZE_PATCH
 
 #include <QDebug>
 #include <QCursor>
