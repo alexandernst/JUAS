@@ -45,6 +45,26 @@ $(document).ready(function(){
         resizeWithWindowMaxDelay: 1
     });
 
+    function betweenMinMaxWidth(width){
+        if(!_.isNull(min_width) && width + lr <= min_width){
+            return min_width;
+        }else if(!_.isNull(max_width) && width + lr >= max_width){
+            return max_width;
+        }else{
+            return width;
+        }
+    };
+
+    function betweenMinMaxHeight(height){
+        if(!_.isNull(min_height) && height + tb <= min_height){
+            return min_height;
+        }else if(!_.isNull(max_height) && height + tb >= max_height){
+            return max_height;
+        }else{
+            return height;
+        }
+    };
+
     container.resizable({
         handles: 'n, e, s, w, ne, se, sw, nw', // 'all'
 
@@ -122,99 +142,80 @@ $(document).ready(function(){
             //wwc == current window width
             //whc == current window height
 
-            //      wyi                                wyc/wyf
-            //  wxi /******wwi*******\         wxc/wxf /******wwc*******\
-            //      *               *                  *                *
-            //      *               *                  *              whc
-            //      *             whi        --->      *                *
-            //      *               *                  \****************/ mxc
-            //      *               *                                 myc
+            //      wyi                                      wyc/wyf
+            //  wxi /******wwi*******\               wxc/wxf /******wwc*******\
+            //      *               *                        *                *
+            //      *               *                        *              whc
+            //      *             whi        --->            *                *
+            //      *               *                        \****************/ mxc
+            //      *               *                                       myc
             //      \***************/ mxi
             //                    myi
 
             var mxc = e.screenX;
             var myc = e.screenY;
 
-            var wwc, whc, wxc, wyc;
+            var wwc, whc;
+
+            var wxc = wxf;
+            var wyc = wyf;
 
             switch(side){
                 case "e":
                     wwc = wwi - (mxi - mxc);
                     whc = whi;
-
-                    wxc = wxf;
-                    wyc = wyf;
                     break;
 
                 case "se":
                     wwc = wwi - (mxi - mxc);
                     whc = whi - (myi - myc);
-
-                    wxc = wxf;
-                    wyc = wyf;
                     break;
 
                 case "s":
                     wwc = wwi;
                     whc = whi - (myi - myc);
-
-                    wxc = wxf;
-                    wyc = wyf;
                     break;
 
                 case "sw":
                     wwc = wwi - (mxc - mxi);
                     whc = whi - (myi - myc);
 
-                    wxc = wxf - wwc;
-                    wyc = wyf;
+                    wxc = wxf - betweenMinMaxWidth(wwc);
                     break;
 
                 case "w":
                     wwc = wwi - (mxc - mxi);
                     whc = whi;
 
-                    wxc = wxf - wwc;
-                    wyc = wyf;
+                    wxc = wxf - betweenMinMaxWidth(wwc);
                     break;
 
                 case "nw":
                     wwc = wwi - (mxc - mxi);
                     whc = whi - (myc - myi);
 
-                    wxc = wxf - wwc;
-                    wyc = wyf - whc;
+                    wxc = wxf - betweenMinMaxWidth(wwc);
+                    wyc = wyf - betweenMinMaxHeight(whc);
                     break;
 
                 case "n":
                     wwc = wwi;
                     whc = whi - (myc - myi);
 
-                    wxc = wxf;
-                    wyc = wyf - whc;
+                    wyc = wyf - betweenMinMaxHeight(whc);
                     break;
 
                 case "ne":
                     wwc = wwi - (mxi - mxc);
                     whc = whi - (myc - myi);
 
-                    wxc = wxf;
-                    wyc = wyf - whc;
+                    wyc = wyf - betweenMinMaxHeight(whc);
                     break;
 
             }
 
-            if(!_.isNull(min_width) && wwc + lr <= min_width){
-                wwc = min_width;
-            }else if(!_.isNull(max_width) && wwc + lr >= max_width){
-                wwc = max_width;
-            }
-
-            if(!_.isNull(min_height) && whc + tb <= min_height){
-                whc = min_height;
-            }else if(!_.isNull(max_height) && whc + tb >= max_height){
-                whc = max_height;
-            }
+            wwc = betweenMinMaxWidth(wwc);
+            whc = betweenMinMaxHeight(whc);
 
             App.resize(wxc, wyc, wwc + lr, whc + tb);
             container.css({ left: "0px", top: "0px", width: wwc, height: whc });
