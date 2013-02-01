@@ -1,7 +1,7 @@
 $(document).ready(function(){
     "use strict";
 
-    var finalX, finalY;
+    var wxf, wyf, wwi, whi, mxi, myi;
     var lr = 0, tb = 0;
     var shiftW = 0, shiftH = 0;
     var container = $('#container'), layout, side;
@@ -62,39 +62,42 @@ $(document).ready(function(){
             var handleClass = $(e.originalEvent.target).attr("class");
             side = handleClass.match(/(?:^| )ui-resizable-(.{1,2})(?: |$)/)[1];
 
-            var startX = App.x;
-            var startY = App.y;
+            var wxi = App.x;
+            var wyi = App.y;
 
-            var startW = App.width;
-            var startH = App.height;
+            wwi = App.width;
+            whi = App.height;
+
+            mxi = e.screenX;
+            myi = e.screenY;
 
             switch(side){
                 case "e":
                 case "se":
                 case "s":
                     //Fix to upper left corner
-                    finalX = startX;
-                    finalY = startY;
+                    wxf = wxi;
+                    wyf = wyi;
                     break;
 
                 case "sw":
                 case "w":
                     //Fix to upper right corner
-                    finalX = startX + startW;
-                    finalY = startY;
+                    wxf = wxi + wwi;
+                    wyf = wyi;
                     break;
 
                 case "nw":
                     //Fix to bottom right corner
-                    finalX = startX + startW;
-                    finalY = startY + startH;
+                    wxf = wxi + wwi;
+                    wyf = wyi + whi;
                     break;
 
                 case "n":
                 case "ne":
                     //Fix to bottom left corner
-                    finalX = startX;
-                    finalY = startY + startH;
+                    wxf = wxi;
+                    wyf = wyi + whi;
                     break;
             }
 
@@ -108,121 +111,113 @@ $(document).ready(function(){
         },
 
         resize: function(e, ui){
-            var currentX = finalX;
-            var currentY = finalY;
 
-            var currentW = ui.size.width;
-            var currentH = ui.size.height;
+            //wxi == initial window X
+            //wyi == initial window Y
+            //wxf == opposite X of the side that is being resized, eg: wxf of SE is NW
+            //wyf == oppsoite Y of the side that is being resized
 
-            var diffW = ui.originalSize.width - currentW;
-            var diffH = ui.originalSize.height - currentH;
+            //wwi == initial window width
+            //whi == initial window height
+            //wwc == current window width
+            //whc == current window height
+
+            //      wyi                                wyc/wyf
+            //  wxi /******wwi*******\         wxc/wxf /******wwc*******\
+            //      *               *                  *                *
+            //      *               *                  *              whc
+            //      *             whi        --->      *                *
+            //      *               *                  \****************/ mxc
+            //      *               *                                 myc
+            //      \***************/ mxi
+            //                    myi
+
+            var mxc = e.screenX;
+            var myc = e.screenY;
+
+            var wwc, whc, wxc, wyc;
 
             switch(side){
                 case "e":
+                    wwc = wwi - (mxi - mxc);
+                    whc = whi;
+
+                    wxc = wxf;
+                    wyc = wyf;
+                    break;
+
                 case "se":
+                    wwc = wwi - (mxi - mxc);
+                    whc = whi - (myi - myc);
+
+                    wxc = wxf;
+                    wyc = wyf;
+                    break;
+
                 case "s":
+                    wwc = wwi;
+                    whc = whi - (myi - myc);
 
-                    currentW += lr;
-                    currentH += tb;
-
+                    wxc = wxf;
+                    wyc = wyf;
                     break;
 
                 case "sw":
+                    wwc = wwi - (mxc - mxi);
+                    whc = whi - (myi - myc);
 
-                    currentH = currentH + tb;
-
-                    if(!_.isNull(min_width) && shiftW + currentW + lr <= min_width){
-                        currentW = min_width;
-                    }else if(!_.isNull(max_width) && shiftW + currentW + lr >= max_width){
-                        currentW = max_width;
-                    }else{
-                        shiftW -= diffW;
-                        currentW = ui.originalSize.width + lr + shiftW;
-                    }
-
-                    currentX -= currentW;
-
+                    wxc = wxf - wwc;
+                    wyc = wyf;
                     break;
 
                 case "w":
+                    wwc = wwi - (mxc - mxi);
+                    whc = whi;
 
-                    currentH += tb;
-
-                    if(!_.isNull(min_width) && shiftW + currentW + lr <= min_width){
-                        currentW = min_width;
-                    }else if(!_.isNull(max_width) && shiftW + currentW + lr >= max_width){
-                        currentW = max_width;
-                    }else{
-                        shiftW -= diffW;
-                        currentW = ui.originalSize.width + lr + shiftW;
-                    }
-
-                    currentX -= currentW;
-
+                    wxc = wxf - wwc;
+                    wyc = wyf;
                     break;
 
                 case "nw":
+                    wwc = wwi - (mxc - mxi);
+                    whc = whi - (myc - myi);
 
-                    if(!_.isNull(min_width) && shiftW + currentW + lr <= min_width){
-                        currentW = min_width;
-                    }else if(!_.isNull(max_width) && shiftW + currentW + lr >= max_width){
-                        currentW = max_width;
-                    }else{
-                        shiftW -= diffW;
-                        currentW = ui.originalSize.width + lr + shiftW;
-                    }
-
-                    if(!_.isNull(min_height) && shiftH + currentH + tb <= min_height){
-                        currentH = min_height;
-                    }else if(!_.isNull(max_height) && shiftH + currentH + tb >= max_height){
-                        currentH = max_height;
-                    }else{
-                        shiftH -= diffH;
-                        currentH = ui.originalSize.height + tb + shiftH;
-                    }
-
-                    currentX -= currentW;
-                    currentY -= currentH;
-
+                    wxc = wxf - wwc;
+                    wyc = wyf - whc;
                     break;
 
                 case "n":
+                    wwc = wwi;
+                    whc = whi - (myc - myi);
 
-                    currentW += lr;
-
-                    if(!_.isNull(min_height) && shiftH + currentH + tb <= min_height){
-                        currentH = min_height;
-                    }else if(!_.isNull(max_height) && shiftH + currentH + tb >= max_height){
-                        currentH = max_height;
-                    }else{
-                        shiftH -= diffH;
-                        currentH = ui.originalSize.height + tb + shiftH;
-                    }
-
-                    currentY -= currentH;
-
+                    wxc = wxf;
+                    wyc = wyf - whc;
                     break;
 
                 case "ne":
+                    wwc = wwi - (mxi - mxc);
+                    whc = whi - (myc - myi);
 
-                    currentW = currentW + lr;
-
-                    if(!_.isNull(min_height) && shiftH + currentH + tb <= min_height){
-                        currentH = min_height;
-                    }else if(!_.isNull(max_height) && shiftH + currentH + tb >= max_height){
-                        currentH = max_height;
-                    }else{
-                        shiftH -= diffH;
-                        currentH = ui.originalSize.height + tb + shiftH;
-                    }
-
-                    currentY -= currentH;
-
+                    wxc = wxf;
+                    wyc = wyf - whc;
                     break;
+
             }
 
-            App.resize(currentX, currentY, currentW, currentH);
-            container.css({ left: "0px", top: "0px", width: currentW - lr, height: currentH - tb });
+            if(!_.isNull(min_width) && wwc + lr <= min_width){
+                wwc = min_width;
+            }else if(!_.isNull(max_width) && wwc + lr >= max_width){
+                wwc = max_width;
+            }
+
+            if(!_.isNull(min_height) && whc + tb <= min_height){
+                whc = min_height;
+            }else if(!_.isNull(max_height) && whc + tb >= max_height){
+                whc = max_height;
+            }
+
+            App.resize(wxc, wyc, wwc + lr, whc + tb);
+            container.css({ left: "0px", top: "0px", width: wwc, height: whc });
 
             e.preventDefault();
             EventBus.dispatch("window_resize");
