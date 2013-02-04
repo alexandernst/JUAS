@@ -39,9 +39,6 @@ $(document).ready(function(){
         App.resize(x, y, width, height);
     }
 
-    //Show the main window
-    App.show();
-
     //We can save the window geometry state after each resize/position change
     function save_geometry(){
         App.saveWindowGeometry(app_company, app_name);
@@ -56,8 +53,16 @@ $(document).ready(function(){
     }
     EventBus.addEventListener("app_quit", before_quit);
 
-    //We can also clear the window geometry state if we want to do so
-    //App.clearSavedWindowGeometry(app_company, app_name);
+    function clear_window_geometry(){
+        //We can also clear the window geometry state if we want to do so
+        App.clearSavedWindowGeometry(app_company, app_name);
+    }
+    App.addTrayIconMenuItem("clear_window_geometry_item", "Clear window geometry", "clear_window_geometry_item_event");
+    EventBus.addEventListener("clear_window_geometry_item_event", clear_window_geometry);
 
+    App.addTrayIconMenuItem("quit_item", "Quit", "quit_item_event");
+    EventBus.addEventListener("quit_item_event", before_quit);
 
+    //Show the main window
+    App.show();
 });
