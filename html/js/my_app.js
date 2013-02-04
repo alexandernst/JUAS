@@ -60,7 +60,7 @@ $(document).ready(function(){
     App.addTrayIconMenuItem("clear_window_geometry_item", "Clear window geometry", "clear_window_geometry_item_event");
     EventBus.addEventListener("clear_window_geometry_item_event", clear_window_geometry);
 
-    App.addTrayIconMenuItem("quit_item", "Quit", "quit_item_event");
+    App.addTrayIconMenuItem("quit_item", "Quit", "quit_item_event", "html/img/trayicon_disabled.png");
     EventBus.addEventListener("quit_item_event", before_quit);
 
     //Show the main window
