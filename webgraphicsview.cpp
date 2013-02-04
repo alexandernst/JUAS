@@ -17,6 +17,14 @@ WebGraphicsView::WebGraphicsView(QWidget *parent) : QGraphicsView(parent){
     setFrameShape(QFrame::NoFrame);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    this->setObjectName("WebGraphicsView");
+#ifdef QT_NO_DEBUG
+    setStyleSheet("QWidget#WebGraphicsView { background: transparent; }");
+#else
+    setStyleSheet("QWidget#WebGraphicsView { background: green; }");
+#endif
+
 }
 
 void WebGraphicsView::loadFile(QString fileName){

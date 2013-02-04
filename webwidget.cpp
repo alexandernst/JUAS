@@ -37,14 +37,10 @@ WebWidget::WebWidget() : QMainWindow(){
     ws->setAttribute(QWebSettings::LocalContentCanAccessRemoteUrls, true);
     ws->setAttribute(QWebSettings::OfflineWebApplicationCacheEnabled, true);
 
-#ifdef QT_NO_DEBUG
-    setStyleSheet("QWidget { background: transparent; }");
-#else
+#ifndef QT_NO_DEBUG
     webInspector = new QWebInspector();
     webInspector->setPage(gv->webView()->page());
     webInspector->setGeometry(2000, 600, 1300, 400);
-
-    setStyleSheet("QWidget { background: green; }");
 #endif
 
     QObject::connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(cleanUp()));
