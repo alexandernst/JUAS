@@ -9,8 +9,9 @@ QT += webkitwidgets widgets network
 
 SOURCES += \
     main.cpp \
+    trayicon.cpp \
     webwidget.cpp \
-    webgraphicsview.cpp
+    webgraphicsview.cpp \
 
 HEADERS += \
     webwidget.h \

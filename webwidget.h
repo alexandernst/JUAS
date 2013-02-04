@@ -6,6 +6,7 @@
 #define MINIMIZE_PATCH
 
 #include <QDebug>
+#include <QAction>
 #include <QCursor>
 #include <QtWebKit>
 #include <QWebView>
