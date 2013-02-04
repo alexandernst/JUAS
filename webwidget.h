@@ -61,7 +61,7 @@ class WebWidget : public QMainWindow
         QMenu *trayIconMenu;
         QDesktopWidget *desktop;
         QPoint fromBorderPosition;
-        QSystemTrayIcon *trayIcon = 0;
+        QSystemTrayIcon *trayIcon;
 #ifndef QT_NO_DEBUG
         QWebInspector *webInspector;
 #endif

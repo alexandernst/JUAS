@@ -4,6 +4,7 @@
 
 WebWidget::WebWidget() : QMainWindow(){
 
+    trayIcon = 0;
     desktop = QApplication::desktop();
 
     gv = new WebGraphicsView();
