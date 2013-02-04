@@ -67,7 +67,7 @@ $(document).ready(function(){
     function first_minimize_message(){
         if(first_minimize){
             first_minimize = false;
-            App.showTrayIconMessage("Aviso", "El programa puede volver a ser abierto desde este icono.", "Information", 5000);
+            App.showTrayIconMessage("Information", "This app can be restore from this icon", "Information", 5000);
         }
     }
     EventBus.addEventListener("window_minimize", first_minimize_message);
