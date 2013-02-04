@@ -10,10 +10,10 @@ WebWidget::WebWidget() : QMainWindow(){
     gv = new WebGraphicsView();
     gv->loadFile(QLatin1String("html/index.html"));
 
-    layout = new QVBoxLayout;
+    widget = new QWidget(this);
+    layout = new QVBoxLayout(widget);
     layout->addWidget(gv);
     layout->setMargin(0);
-    widget = new QWidget(this);
     widget->setLayout(layout);
     setCentralWidget(widget);
 
