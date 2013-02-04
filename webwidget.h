@@ -53,18 +53,17 @@ class WebWidget : public QMainWindow
         Q_INVOKABLE void showTrayIconMessage(QString title, QString msg, QString icon = "NoIcon", int msecs = 10000);
 
     private:
-
-        QWidget *widget; //Main widget where the webView is placed
         QApplication *app;
-        QVBoxLayout *layout; //Layout of main widget
-        WebGraphicsView *gv;
-        QMenu *trayIconMenu;
         QDesktopWidget *desktop;
         QPoint fromBorderPosition;
+        QVBoxLayout *layout;
         QSystemTrayIcon *trayIcon;
-#ifndef QT_NO_DEBUG
+        QMenu *trayIconMenu;
         QWebInspector *webInspector;
-#endif
+        QWidget *widget;
+        QWebFrame *wf;
+        QWebSettings *ws;
+        WebGraphicsView *gv;
 
         QAction *createTrayIconMenuItem(QString id, QString text, QString event, QString icon);
 

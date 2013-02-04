@@ -21,11 +21,11 @@ WebWidget::WebWidget() : QMainWindow(){
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowSystemMenuHint | Qt::WindowMinimizeButtonHint);
     setAttribute(Qt::WA_TranslucentBackground, true);
 
-    QWebFrame *wf = gv->webView()->page()->mainFrame();
+    wf = gv->webView()->page()->mainFrame();
     wf->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
     wf->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAlwaysOff);
 
-    QWebSettings *ws = gv->webView()->page()->settings();
+    ws = gv->webView()->page()->settings();
     ws->setAttribute(QWebSettings::LocalStorageEnabled, true);
     ws->setAttribute(QWebSettings::ScrollAnimatorEnabled, true);
     ws->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
@@ -49,7 +49,7 @@ WebWidget::WebWidget() : QMainWindow(){
 
 void WebWidget::createJSBridge(){
     // http://qt-project.org/doc/qt-4.8/qtwebkit-bridge.html
-    gv->webView()->page()->mainFrame()->addToJavaScriptWindowObject("App", this);
+    wf->addToJavaScriptWindowObject("App", this);
 
 #ifndef QT_NO_DEBUG
     webInspector->show();
@@ -319,5 +319,5 @@ void WebWidget::trayIconClicked(QSystemTrayIcon::ActivationReason reason){
 
 void WebWidget::trayIconMenuClicked(QAction *action){
     QString s = action->property("EventBus").toString();
-    gv->webView()->page()->mainFrame()->evaluateJavaScript(QString("EventBus.dispatch('%1')").arg(s));
+    wf->evaluateJavaScript(QString("EventBus.dispatch('%1')").arg(s));
 }
