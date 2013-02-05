@@ -240,6 +240,7 @@ $(document).ready(function(){
 
     $("#maximize").on("mouseup", function(e){
         e.preventDefault();
+        container.css({ width: "", height: "" }); //Hack. Maybe jQuery layout should take care of that?
         App.maximize();
         EventBus.dispatch("window_maximize");
     });
