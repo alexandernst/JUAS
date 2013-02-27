@@ -38,7 +38,7 @@ App.quit();
 
 
 /*
-Minimze the application.
+Minimize the application.
 */
 App.minimize();
 
