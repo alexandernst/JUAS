@@ -1,6 +1,18 @@
 $(document).ready(function(){
     "use strict";
 
+    console.log("here")
+    new QWebChannel(qt.webChannelTransport, function (channel) {
+        console.log(channel);
+        window.App = channel.objects.App;
+        core_init();
+        app_init();
+    });
+});
+
+function core_init(){
+    "use strict";
+
     var wxf, wyf, wwi, whi, mxi, myi;
     var lr = 0, tb = 0;
     var shiftW = 0, shiftH = 0;
@@ -282,4 +294,4 @@ $(document).ready(function(){
         });
     });
 
-});
+};

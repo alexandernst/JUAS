@@ -1,4 +1,5 @@
-$(document).ready(function(){
+function app_init(){
+    "use strict";
 
     //Some global vars
     var app_company = "my_app_company";
@@ -25,18 +26,19 @@ $(document).ready(function(){
     if(App.isWindowGeometrySaveAvailable(app_company, app_name)){
         App.restoreWindowGeometry(app_company, app_name);
     }else{
-        availableGeometry = App.availableGeometry();
-        var available_x = availableGeometry[0];
-        var available_y = availableGeometry[1]
-        var available_width = availableGeometry[2];
-        var available_height = availableGeometry[3];
+        App.availableGeometry(function(availableGeometry) {
+            var available_x = availableGeometry[0];
+            var available_y = availableGeometry[1]
+            var available_width = availableGeometry[2];
+            var available_height = availableGeometry[3];
 
-        var width = available_width * 0.7; //70% width
-        var height = available_height * 0.7; //70% height;
-        var x = available_x + ((available_width - width) / 2);
-        var y = available_y + ((available_height - height) / 2);
+            var width = available_width * 0.7; //70% width
+            var height = available_height * 0.7; //70% height;
+            var x = available_x + ((available_width - width) / 2);
+            var y = available_y + ((available_height - height) / 2);
 
-        App.resize(x, y, width, height);
+            App.resize(x, y, width, height);
+        });
     }
 
     //We can save the window geometry state after each resize/position change
@@ -74,4 +76,4 @@ $(document).ready(function(){
 
     //Show the main window
     App.show();
-});
+};

@@ -8,15 +8,13 @@
 #include <QDebug>
 #include <QAction>
 #include <QCursor>
-#include <QtWebKit>
-#include <QWebView>
+#include <QtWebEngineWidgets>
+#include <QWebEngineView>
 #include <QtWidgets>
-#include <QWebFrame>
-#include <QWebSettings>
-#include <QWebInspector>
-#include <QtWebKitWidgets>
+#include <QWebEnginePage>
+#include <QWebEngineSettings>
 
-#include <webgraphicsview.h>
+#include <webview.h>
 
 class WebWidget : public QMainWindow
 {
@@ -38,6 +36,22 @@ class WebWidget : public QMainWindow
         Q_INVOKABLE void setTitle(QString title);
         Q_INVOKABLE void quit();
 
+        Q_PROPERTY(int x READ getX WRITE setX NOTIFY xChanged)
+        Q_INVOKABLE int getX();
+        Q_INVOKABLE void setX(int x);
+
+        Q_PROPERTY(int y READ getY WRITE setY NOTIFY yChanged)
+        Q_INVOKABLE int getY();
+        Q_INVOKABLE void setY(int y);
+
+        Q_PROPERTY(int width READ getWidth WRITE setWidth NOTIFY widthChanged)
+        Q_INVOKABLE int getWidth();
+        Q_INVOKABLE void setWidth(int width);
+
+        Q_PROPERTY(int height READ getHeight WRITE setHeight NOTIFY heightChanged)
+        Q_INVOKABLE int getHeight();
+        Q_INVOKABLE void setHeight(int height);
+
         //Tray icon
         Q_INVOKABLE void addTrayIconMenuItem(QString id, QString text, QString event, QString icon = "");
         Q_INVOKABLE void addTrayIconMenuItemAfter(QString id_menu_item, QString id, QString text, QString event, QString icon = "");
@@ -53,18 +67,30 @@ class WebWidget : public QMainWindow
         Q_INVOKABLE void showTrayIcon();
         Q_INVOKABLE void showTrayIconMessage(QString title, QString msg, QString icon = "NoIcon", int msecs = 10000);
 
+    signals:
+        void xChanged(int x);
+        void yChanged(int y);
+        void widthChanged(int width);
+        void heightChanged(int height);
+
+    public slots:
+        void xHasChanged(int x);
+        void yHasChanged(int y);
+        void widthHasChanged(int width);
+        void heightHasChanged(int height);
+
     private:
         QApplication *app;
         QDesktopWidget *desktop;
+        QWebChannel *channel;
         QPoint fromBorderPosition;
         QVBoxLayout *layout;
         QSystemTrayIcon *trayIcon;
         QMenu *trayIconMenu;
-        QWebInspector *webInspector;
         QWidget *widget;
-        QWebFrame *wf;
-        QWebSettings *ws;
-        WebGraphicsView *gv;
+        QWebEnginePage *wp;
+        QWebEngineSettings *ws;
+        WebView *gv;
 
         QAction *createTrayIconMenuItem(QString id, QString text, QString event, QString icon);
 

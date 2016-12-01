@@ -5,8 +5,7 @@ WebWidget::WebWidget() : QMainWindow(){
     trayIcon = 0;
     desktop = QApplication::desktop();
 
-    gv = new WebGraphicsView();
-    gv->loadFile(QLatin1String("html/index.html"));
+    gv = new WebView();
 
     widget = new QWidget(this);
     layout = new QVBoxLayout(widget);
@@ -19,39 +18,36 @@ WebWidget::WebWidget() : QMainWindow(){
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowSystemMenuHint | Qt::WindowMinimizeButtonHint);
     setAttribute(Qt::WA_TranslucentBackground, true);
 
-    wf = gv->webView()->page()->mainFrame();
-    wf->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
-    wf->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAlwaysOff);
+    wp = gv->webView()->page();
+    //wp->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
+    //wp->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAlwaysOff);
 
     ws = gv->webView()->page()->settings();
-    ws->setAttribute(QWebSettings::LocalStorageEnabled, true);
-    ws->setAttribute(QWebSettings::ScrollAnimatorEnabled, true);
-    ws->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
-    ws->setAttribute(QWebSettings::JavascriptCanOpenWindows, true);
-    ws->setAttribute(QWebSettings::JavascriptCanCloseWindows, true);
-    ws->setAttribute(QWebSettings::JavascriptCanAccessClipboard, true);
-    ws->setAttribute(QWebSettings::OfflineStorageDatabaseEnabled, true);
-    ws->setAttribute(QWebSettings::LocalContentCanAccessFileUrls, true);
-    ws->setAttribute(QWebSettings::LocalContentCanAccessRemoteUrls, true);
-    ws->setAttribute(QWebSettings::OfflineWebApplicationCacheEnabled, true);
-
-#ifndef QT_NO_DEBUG
-    webInspector = new QWebInspector();
-    webInspector->setPage(gv->webView()->page());
-    webInspector->setGeometry(2000, 600, 1300, 400);
-#endif
+    //ws->setAttribute(QWebEngineSettings::Accelerated2dCanvasEnabled, true);
+    ws->setAttribute(QWebEngineSettings::JavascriptCanOpenWindows, true);
+    ws->setAttribute(QWebEngineSettings::JavascriptCanAccessClipboard, true);
+    ws->setAttribute(QWebEngineSettings::LocalContentCanAccessFileUrls, true);
+    ws->setAttribute(QWebEngineSettings::LocalContentCanAccessRemoteUrls, true);
+    ws->setAttribute(QWebEngineSettings::LocalStorageEnabled, true);
+    ws->setAttribute(QWebEngineSettings::ScrollAnimatorEnabled, true);
 
     QObject::connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(cleanUp()));
-    QObject::connect(wf, SIGNAL(javaScriptWindowObjectCleared()), this, SLOT(createJSBridge()));
+
+    //Properties
+    connect(this, SIGNAL(xChanged(int)), this, SLOT(xHasChanged(int)));
+    connect(this, SIGNAL(yChanged(int)), this, SLOT(yHasChanged(int)));
+    connect(this, SIGNAL(widthChanged(int)), this, SLOT(widthHasChanged(int)));
+    connect(this, SIGNAL(heightChanged(int)), this, SLOT(heightHasChanged(int)));
+
+    createJSBridge();
+    gv->loadFile("html/index.html");
+    wp->runJavaScript("document.documentElement.contentEditable = true");
 }
 
 void WebWidget::createJSBridge(){
-    // http://qt-project.org/doc/qt-4.8/qtwebkit-bridge.html
-    wf->addToJavaScriptWindowObject("App", this);
-
-#ifndef QT_NO_DEBUG
-    webInspector->show();
-#endif
+    channel = new QWebChannel(this);
+    wp->setWebChannel(channel);
+    channel->registerObject(QStringLiteral("App"), this);
 }
 
 void WebWidget::setTitle(QString title){
@@ -67,12 +63,19 @@ void WebWidget::mousePressEvent(int fromBorderX, int fromBorderY){
 void WebWidget::mouseMoveEvent(int dragX, int dragY){
     //If the window is maximized do nothing
     if(!isMaximized()){
-        move(QPoint(dragX, dragY) - fromBorderPosition);
+        QPoint p = QPoint(dragX, dragY) - fromBorderPosition;
+        move(p);
+        emit xChanged(p.x());
+        emit yChanged(p.y());
     }
 }
 
 void WebWidget::resize(int x, int y, int w, int h){
     setGeometry(x, y, w, h);
+    emit xChanged(x);
+    emit yChanged(y);
+    emit widthChanged(w);
+    emit heightChanged(h);
 }
 
 void WebWidget::minimize(){
@@ -93,6 +96,10 @@ void WebWidget::maximize(){
             //Don't overlap the taskbar
             QRect ag = desktop->availableGeometry();
             setGeometry(ag.x(), ag.y(), ag.width(), ag.height());
+            emit xChanged(ag.x());
+            emit yChanged(ag.y());
+            emit widthChanged(ag.width());
+            emit heightChanged(ag.height());
         }
     }
 }
@@ -132,4 +139,61 @@ void WebWidget::cleanUp(){
 
 void WebWidget::quit(){
     QApplication::quit();
+}
+
+
+////////////////////////////////
+
+int WebWidget::getX(){
+    return this->x();
+}
+
+void WebWidget::setX(int x){
+    this->pos().setX(x);
+    emit xChanged(x);
+}
+
+void WebWidget::xHasChanged(int x){
+    //
+}
+
+int WebWidget::getY(){
+    return this->y();
+}
+
+void WebWidget::setY(int y){
+    this->pos().setY(y);
+    emit yChanged(y);
+}
+
+void WebWidget::yHasChanged(int y){
+    //
+}
+
+int WebWidget::getWidth(){
+    return this->frameGeometry().width();
+}
+
+void WebWidget::setWidth(int width){
+    QRect r = this->frameGeometry();
+    r.setWidth(width);
+    emit widthChanged(width);
+}
+
+void WebWidget::widthHasChanged(int width){
+    //
+}
+
+int WebWidget::getHeight(){
+    return this->frameGeometry().height();
+}
+
+void WebWidget::setHeight(int height){
+    QRect r = this->frameGeometry();
+    r.setHeight(height);
+    emit heightChanged(height);
+}
+
+void WebWidget::heightHasChanged(int height){
+    //
 }

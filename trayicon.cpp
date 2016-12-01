@@ -155,5 +155,5 @@ void WebWidget::trayIconClicked(QSystemTrayIcon::ActivationReason reason){
 
 void WebWidget::trayIconMenuClicked(QAction *action){
     QString s = action->property("EventBus").toString();
-    wf->evaluateJavaScript(QString("EventBus.dispatch('%1')").arg(s));
+    wp->runJavaScript(QString("EventBus.dispatch('%1')").arg(s));
 }
